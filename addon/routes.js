@@ -2,7 +2,7 @@ import buildRoutes from 'ember-engines/routes';
 
 export default buildRoutes(function () {
     this.route('virtual', { path: '/:section/:slug' });
-    this.route('operations', { path: '/' }, function () {
+    this.route('operations', { path: '/operations' }, function () {
         this.route('order-config', function () {});
         this.route('service-rates', function () {
             this.route('index', { path: '/' }, function () {
@@ -29,7 +29,7 @@ export default buildRoutes(function () {
             });
         });
     });
-    this.route('management', { path: '/manage' }, function () {
+    this.route('management', { path: '/' }, function () {
         this.route('fleets', function () {
             this.route('index', { path: '/' }, function () {
                 this.route('new');

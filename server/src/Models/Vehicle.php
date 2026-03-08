@@ -116,6 +116,7 @@ class Vehicle extends Model
         'make',
         'model',
         'model_type',
+        'version',
         'year',
         'color',
         'location',
@@ -149,6 +150,8 @@ class Vehicle extends Model
         'loan_number_of_payments',
         'loan_first_payment',
         'loan_amount',
+        'loan_provider',        
+        'loan_last_payment', 
         // Lifecycle
         'estimated_service_life_distance_unit',
         'estimated_service_life_distance',
@@ -204,6 +207,15 @@ class Vehicle extends Model
         'slug',
         'purchased_at',
         'lease_expires_at',
+
+        'assurance_date',
+        'assurance_expiry',
+        'vignette_date',
+        'vignette_expiry',
+        'visite_technique_date',
+        'visite_technique_expiry',
+        'carte_grise_date',
+        'carte_grise_expiry',
     ];
 
     /**
@@ -220,7 +232,7 @@ class Vehicle extends Model
      *
      * @var array
      */
-    protected $appends = ['display_name', 'photo_url', 'driver_name', 'vendor_name'];
+    protected $appends = [];
 
     /**
      * The attributes excluded from the model's JSON form.
@@ -261,6 +273,16 @@ class Vehicle extends Model
         'purchased_at'       => 'datetime',
         'lease_expires_at'   => 'datetime',
         'loan_first_payment' => 'date',
+        'loan_last_payment' => 'date',
+
+        'assurance_date'          => 'date',
+        'assurance_expiry'        => 'date',
+        'vignette_date'           => 'date',
+        'vignette_expiry'         => 'date',
+        'visite_technique_date'   => 'date',
+        'visite_technique_expiry' => 'date',
+        'carte_grise_date'        => 'date',
+        'carte_grise_expiry'      => 'date',
         // Booleans
         'online'       => 'boolean',
         'dpf_equipped' => 'boolean',

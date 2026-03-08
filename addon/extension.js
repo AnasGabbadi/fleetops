@@ -7,7 +7,7 @@ export default {
         const widgetService = universe.getService('widget');
 
         // Register header navigation
-        menuService.registerHeaderMenuItem('Fleet-Ops', 'console.fleet-ops', { icon: 'route', priority: 0 });
+        menuService.registerHeaderMenuItem('Fleet Management', 'console.fleet-ops', { icon: 'route', priority: 0 });
 
         // Register admin sections
         menuService.registerAdminMenuPanel(

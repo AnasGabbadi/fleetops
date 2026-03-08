@@ -79,9 +79,9 @@
             </div>
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-2 text-xs no-input-group-padding">
-            <InputGroup @name={{t "common.internal-id"}}>
+            {{!-- <InputGroup @name={{t "common.internal-id"}}>
                 <Input @value={{@resource.internal_id}} @type="text" class="w-full form-input" placeholder={{t "common.internal-id"}} disabled={{cannot-write @resource}} />
-            </InputGroup>
+            </InputGroup> --}}
 
             <InputGroup @name={{t "driver.fields.driver-license"}}>
                 <Input
@@ -93,7 +93,16 @@
                 />
             </InputGroup>
 
-            <InputGroup @name={{t "driver.fields.vendor"}}>
+             <InputGroup @name="Date d'expiration du permis">
+                <DatePicker
+                    @value={{or (format-date-fns @resource.drivers_license_expiry "dd-MM-yyyy") null}}
+                    @onChange={{fn (mut @resource.drivers_license_expiry)}}
+                    @placeholder="DD-MM-YYYY"
+                    class="filter-date-input w-full flex-1"
+                />
+            </InputGroup>
+
+            {{!-- <InputGroup @name={{t "driver.fields.vendor"}}>
                 <ModelSelect
                     @modelName="vendor"
                     @selectedModel={{@resource.vendor}}
@@ -107,7 +116,7 @@
                 >
                     {{model.name}}
                 </ModelSelect>
-            </InputGroup>
+            </InputGroup> --}}
 
             <InputGroup @name={{t "resource.vehicle"}}>
                 <ModelSelect
@@ -157,16 +166,16 @@
                     </PowerSelect>
                 </div>
             </InputGroup>
-            <InputGroup @name={{t "common.coordinates"}} @wrapperClass="col-span-2">
+            {{!-- <InputGroup @name={{t "common.coordinates"}} @wrapperClass="col-span-2">
                 <ModelCoordinatesInput @model={{@resource}} @disabled={{cannot-write @resource}} @autocomplete="location" />
-            </InputGroup>
+            </InputGroup> --}}
         </div>
         <RegistryYield @registry="fleet-ops:component:driver:form:details" as |RegistryComponent|>
             <RegistryComponent @resource={{@resource}} @controller={{this.controller}} @permission={{get-write-permission @resource}} />
         </RegistryYield>
     </ContentPanel>
 
-    <CustomField::Yield @subject={{@resource}} @wrapperClass="bordered-top" />
+    {{!-- <CustomField::Yield @subject={{@resource}} @wrapperClass="bordered-top" />
 
     <RegistryYield @registry="fleet-ops:component:driver:form" as |RegistryComponent|>
         <RegistryComponent @resource={{@resource}} @controller={{this.controller}} @permission={{get-write-permission @resource}} />
@@ -176,7 +185,7 @@
         <AvatarPicker @model={{@resource}} @defaultAvatar={{config "defaultValues.driverAvatar"}} />
     </ContentPanel>
 
-    <ContentPanel @title={{t "common.metadata"}} @open={{true}} @wrapperClass="bordered-top">
+    <ContentPanel @title={{"formations supplémentaires"}} @open={{true}} @wrapperClass="bordered-top">
         <MetadataEditor @value={{@resource.meta}} @onChange={{fn (mut @resource.meta)}} />
-    </ContentPanel>
+    </ContentPanel> --}}
 </div>

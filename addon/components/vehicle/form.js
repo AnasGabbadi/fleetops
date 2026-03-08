@@ -11,7 +11,7 @@ export default class VehicleFormComponent extends Component {
     @service notifications;
     @service modalsManager;
     @tracked statusOptions = ['active', 'pending'];
-
+    
     @action updateAvatarUrl(option) {
         this.args.resource.avatar_url = option.key === 'custom_avatar' ? option.value : [option.value];
     }
@@ -27,6 +27,18 @@ export default class VehicleFormComponent extends Component {
         this.args.resource.meta = {
             ...meta,
         };
+    }
+    
+    @action setMake(value) {
+        this.args.resource.make = value;
+    }
+
+    @action setModel(value) {
+        this.args.resource.model = value;
+    }
+
+    @action setYear(value) {
+        this.args.resource.year = value;
     }
 
     @task *handlePhotoUpload(file) {

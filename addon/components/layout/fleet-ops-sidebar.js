@@ -103,7 +103,7 @@ export default class LayoutFleetOpsSidebarComponent extends Component {
                 icon: 'warehouse',
                 route: 'management.vendors',
                 permission: 'fleet-ops list vendor',
-                visible: this.abilities.can('fleet-ops see vendor'),
+                visible: false,//this.abilities.can('fleet-ops see vendor'),
             },
             {
                 intl: 'menu.contacts',
@@ -111,7 +111,7 @@ export default class LayoutFleetOpsSidebarComponent extends Component {
                 icon: 'address-book',
                 route: 'management.contacts',
                 permission: 'fleet-ops list contact',
-                visible: this.abilities.can('fleet-ops see contact'),
+                visible: false,//this.abilities.can('fleet-ops see contact'),
             },
             {
                 intl: 'menu.places',
@@ -119,7 +119,7 @@ export default class LayoutFleetOpsSidebarComponent extends Component {
                 icon: 'location-dot',
                 route: 'management.places',
                 permission: 'fleet-ops list place',
-                visible: this.abilities.can('fleet-ops see place'),
+                visible: false,//this.abilities.can('fleet-ops see place'),
             },
             {
                 intl: 'menu.fuel-reports',
@@ -135,7 +135,7 @@ export default class LayoutFleetOpsSidebarComponent extends Component {
                 icon: 'triangle-exclamation',
                 route: 'management.issues',
                 permission: 'fleet-ops list issue',
-                visible: this.abilities.can('fleet-ops see issue'),
+                visible: false,//this.abilities.can('fleet-ops see issue'),
             },
         ];
 
@@ -182,31 +182,29 @@ export default class LayoutFleetOpsSidebarComponent extends Component {
             // },
         ];
 
-        const maintenanceItems = [
+        const servicesItems = [
             {
-                intl: 'menu.work-orders',
-                title: this.intl.t('menu.work-orders'),
+                title: 'Maintenance',
                 icon: 'clipboard-list',
                 route: 'maintenance.work-orders',
                 permission: 'fleet-ops list work-order',
                 visible: this.abilities.can('fleet-ops see work-order'),
             },
             {
-                intl: 'menu.equipment',
-                title: this.intl.t('menu.equipment'),
+                title: 'Dépannage',
                 icon: 'trailer',
-                route: 'maintenance.equipment',
+                route: 'maintenance.equipmen',
                 permission: 'fleet-ops list equipment',
                 visible: this.abilities.can('fleet-ops see equipment'),
             },
-            {
-                intl: 'menu.parts',
-                title: this.intl.t('menu.parts'),
-                icon: 'cog',
-                route: 'maintenance.parts',
-                permission: 'fleet-ops list part',
-                visible: this.abilities.can('fleet-ops see part'),
-            },
+            // {
+            //     intl: 'menu.parts',
+            //     title: this.intl.t('menu.parts'),
+            //     icon: 'cog',
+            //     route: 'maintenance.parts',
+            //     permission: 'fleet-ops list part',
+            //     visible: this.abilities.can('fleet-ops see part'),
+            // },
         ];
 
         const analyticsItems = [
@@ -235,7 +233,7 @@ export default class LayoutFleetOpsSidebarComponent extends Component {
                 icon: 'cash-register',
                 route: 'settings.payments',
                 permission: 'fleet-ops view payments',
-                visible: this.abilities.can('fleet-ops see payments'),
+                visible: false,//this.abilities.can('fleet-ops see payments'),
             },
             {
                 intl: 'menu.notifications',
@@ -259,7 +257,7 @@ export default class LayoutFleetOpsSidebarComponent extends Component {
                 icon: 'rectangle-list',
                 route: 'settings.custom-fields',
                 permission: 'fleet-ops view custom-field',
-                visible: this.abilities.can('fleet-ops see custom-field'),
+                visible: false,//this.abilities.can('fleet-ops see custom-field'),
             },
             {
                 intl: 'menu.avatars',
@@ -273,7 +271,7 @@ export default class LayoutFleetOpsSidebarComponent extends Component {
 
         const createPanel = (intl, routePrefix, items = [], options = {}) => ({
             intl,
-            title: this.intl.t(intl),
+            title: options.title ?? this.intl.t(intl),
             routePrefix,
             open: options.open ?? true,
             items,
@@ -281,30 +279,31 @@ export default class LayoutFleetOpsSidebarComponent extends Component {
         });
 
         this.menuPanels = this.removeEmptyMenuPanels([
-            createPanel('menu.operations', 'operations', operationsItems, {
-                open: this.appCache.get('fleet-ops:sidebar:operations:open', true),
-                onToggle: (open) => this.appCache.set('fleet-ops:sidebar:operations:open', open),
-            }),
+            // createPanel('menu.operations', 'operations', operationsItems, {
+            //     open: this.appCache.get('fleet-ops:sidebar:operations:open', true),
+            //     onToggle: (open) => this.appCache.set('fleet-ops:sidebar:operations:open', open),
+            // }),
             createPanel('menu.resources', 'management', resourcesItems, {
                 open: this.appCache.get('fleet-ops:sidebar:management:open', true),
                 onToggle: (open) => this.appCache.set('fleet-ops:sidebar:management:open', open),
             }),
-            // createPanel('menu.maintenance', 'maintenance', maintenanceItems, {
-            //     open: this.appCache.get('fleet-ops:sidebar:maintenance:open', false),
-            //     onToggle: (open) => this.appCache.set('fleet-ops:sidebar:maintenance:open', open),
+            createPanel('menu.maintenance', 'maintenance', servicesItems, {
+                open: this.appCache.get('fleet-ops:sidebar:maintenance:open', false),
+                onToggle: (open) => this.appCache.set('fleet-ops:sidebar:maintenance:open', open),
+                title: 'Services',
+            }),
+            // createPanel('menu.connectivity', 'connectivity', connectivityItems, {
+            //     open: this.appCache.get('fleet-ops:sidebar:connectivity:open', false),
+            //     onToggle: (open) => this.appCache.set('fleet-ops:sidebar:connectivity:open', open),
             // }),
-            createPanel('menu.connectivity', 'connectivity', connectivityItems, {
-                open: this.appCache.get('fleet-ops:sidebar:connectivity:open', false),
-                onToggle: (open) => this.appCache.set('fleet-ops:sidebar:connectivity:open', open),
-            }),
-            createPanel('menu.analytics', 'analytics', analyticsItems, {
-                open: this.appCache.get('fleet-ops:sidebar:analytics:open', false),
-                onToggle: (open) => this.appCache.set('fleet-ops:sidebar:analytics:open', open),
-            }),
-            createPanel('menu.settings', 'settings', settingsItems, {
-                open: this.appCache.get('fleet-ops:sidebar:settings:open', true),
-                onToggle: (open) => this.appCache.set('fleet-ops:sidebar:settings:open', open),
-            }),
+            // createPanel('menu.analytics', 'analytics', analyticsItems, {
+            //     open: this.appCache.get('fleet-ops:sidebar:analytics:open', false),
+            //     onToggle: (open) => this.appCache.set('fleet-ops:sidebar:analytics:open', open),
+            // }),
+            // createPanel('menu.settings', 'settings', settingsItems, {
+            //     open: this.appCache.get('fleet-ops:sidebar:settings:open', true),
+            //     onToggle: (open) => this.appCache.set('fleet-ops:sidebar:settings:open', open),
+            // }),
         ]);
     }
 

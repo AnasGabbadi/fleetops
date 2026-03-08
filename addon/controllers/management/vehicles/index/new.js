@@ -16,6 +16,20 @@ export default class ManagementVehiclesIndexNewController extends Controller {
     @tracked vehicle = this.store.createRecord('vehicle', DEFAULT_PROPERTIES);
 
     @task *save(vehicle) {
+        // Validation des champs obligatoires
+        const requiredFields = [
+            { field: 'make', label: 'Marque' },
+            { field: 'model', label: 'Modèle' },
+            { field: 'version', label: 'Version' },
+        ];
+
+        for (const { field, label } of requiredFields) {
+            if (!vehicle[field]) {
+                this.notifications.warning(`Le champ "${label}" est obligatoire.`);
+                return;
+            }
+        }
+
         try {
             yield vehicle.save();
             this.events.trackResourceCreated(vehicle);

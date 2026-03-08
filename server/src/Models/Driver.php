@@ -399,6 +399,37 @@ class Driver extends Model
     }
 
     /**
+     * Override getFillable() to prevent $fillable from growing in Octane worker mode.
+     *
+     * In Octane, if trait boot methods (bootHasApiModelBehavior, bootLogsActivity, etc.)
+     * are re-executed across requests while the Eloquent event dispatcher retains its
+     * listeners, the $fillable instance property can accumulate duplicate entries via
+     * indirect mergeFillable() calls, eventually exhausting PHP memory.
+     *
+     * This method caches the original class-defined fillable list in a static property
+     * and resets the instance's $fillable on every call, guaranteeing a bounded list.
+     */
+    public function getFillable(): array
+    {
+        if (empty(static::$canonicalFillable)) {
+            static::$canonicalFillable = (new \ReflectionClass(static::class))
+                ->getDefaultProperties()['fillable'] ?? [];
+        }
+
+        // Always reset $fillable to prevent any accumulation in Octane
+        $this->fillable = static::$canonicalFillable;
+
+        return $this->fillable;
+    }
+
+    /**
+     * Static cache of the canonical fillable list (set once per Octane worker).
+     *
+     * @var array
+     */
+    protected static array $canonicalFillable = [];
+
+    /**
      * The channels the driver receives notification broadcasts on.
      *
      * @param \Illuminate\Notifications\Notification $notification

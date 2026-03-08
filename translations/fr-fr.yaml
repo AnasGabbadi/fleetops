@@ -45,7 +45,7 @@ menu:
   scheduler: Planificateur
   order-config: Configuration des commandes
   resources: Ressources
-  drivers: Chauffeurs
+  drivers: Conducteurs
   vehicles: Véhicules
   fleets: Flottes
   vendors: Fournisseurs

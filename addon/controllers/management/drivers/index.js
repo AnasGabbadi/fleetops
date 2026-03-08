@@ -125,7 +125,7 @@ export default class ManagementDriversIndexController extends Controller {
                 filterComponent: 'filter/string',
             },
             {
-                label: this.intl.t('column.vendor'),
+                label: '',
                 cellComponent: 'table/cell/anchor',
                 permission: 'fleet-ops view vendor',
                 onClick: async (driver) => {
@@ -138,8 +138,10 @@ export default class ManagementDriversIndexController extends Controller {
                 },
                 valuePath: 'vendor.name',
                 modelNamePath: 'name',
+                hidden: true,
+                hideable: false,
                 resizable: true,
-                filterable: true,
+                filterable: false,
                 filterComponent: 'filter/model',
                 filterComponentPlaceholder: 'Select vendor to filter by',
                 filterParam: 'vendor',
