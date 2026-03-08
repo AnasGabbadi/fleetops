@@ -3,80 +3,25 @@ import { tracked } from '@glimmer/tracking';
 import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
 
-/**
- * Controller for managing organizations in the admin console.
- *
- * @class ConsoleAdminOrganizationsController
- * @extends Controller
- */
 export default class ConsoleAdminOrganizationsController extends Controller {
     @service store;
     @service intl;
     @service router;
     @service filters;
     @service crud;
+    @service notifications;
+    @service modalsManager;
 
-    /**
-     * The search query param value.
-     *
-     * @var {String|null}
-     */
     @tracked query;
-
-    /**
-     * The current page of data being viewed
-     *
-     * @var {Integer}
-     */
     @tracked page = 1;
-
-    /**
-     * The maximum number of items to show per page
-     *
-     * @var {Integer}
-     */
     @tracked limit = 20;
-
-    /**
-     * The filterable param `sort`
-     *
-     * @var {String|Array}
-     */
     @tracked sort = '-created_at';
-
-    /**
-     * The filterable param `name`
-     *
-     * @var {String}
-     */
     @tracked name;
-
-    /**
-     * The filterable param `country`
-     *
-     * @var {String}
-     */
     @tracked country;
-
-    /**
-     * Array to store the fetched companies.
-     *
-     * @var {Array}
-     */
     @tracked companies = [];
 
-    /**
-     * Queryable parameters for this controller's model
-     *
-     * @var {Array}
-     */
     queryParams = ['name', 'page', 'limit', 'sort'];
 
-    /**
-     * Columns for organization
-     *
-     * @memberof ConsoleAdminOrganizationsController
-     */
     columns = [
         {
             label: this.intl.t('common.name'),
@@ -122,34 +67,95 @@ export default class ConsoleAdminOrganizationsController extends Controller {
         },
     ];
 
-    /**
-     * Update search query param and reset page to 1
-     *
-     * @param {Event} event
-     * @memberof ConsoleAdminOrganizationsController
-     */
     @action search(event) {
         this.query = event.target.value ?? '';
         this.page = 1;
     }
 
-    /**
-     * Navigates to the organization-users route for the selected company.
-     *
-     * @method goToCompany
-     * @param {Object} company - The selected company.
-     */
     @action goToCompany(company) {
         this.router.transitionTo('console.admin.organizations.index.users', company.public_id);
     }
 
-    /**
-     * Toggles dialog to export `drivers`
-     *
-     * @void
-     */
     @action exportOrganization() {
         const selections = this.table.selectedRows.map((_) => _.id);
         this.crud.export('companies', { params: { selections } });
+    }
+
+    @action openCreateOrganization() {
+        const org = {
+            organization_name: '',
+            name: '',
+            email: '',
+            phone: '',
+            password: '',
+            password_confirm: '',
+            showPassword: false
+        };
+
+        this.modalsManager.show('modals/create-organization', {
+            title: 'Ajouter une organisation',
+            acceptButtonText: 'Créer',
+            acceptButtonIcon: 'check',
+            ...org,
+            confirm: async (modal) => {
+                modal.startLoading();
+
+                // Validation
+                if (!modal.getOption('organization_name')) {
+                    this.notifications.warning('Le nom de l\'organisation est obligatoire.');
+                    modal.stopLoading();
+                    return;
+                }
+
+                if (!modal.getOption('email')) {
+                    this.notifications.warning('L\'email est obligatoire.');
+                    modal.stopLoading();
+                    return;
+                }
+
+                if (!modal.getOption('password')) {
+                    this.notifications.warning('Le mot de passe est obligatoire.');
+                    modal.stopLoading();
+                    return;
+                }
+
+                if (modal.getOption('password') !== modal.getOption('password_confirm')) {
+                    this.notifications.warning('Les mots de passe ne correspondent pas.');
+                    modal.stopLoading();
+                    return;
+                }
+
+                try {
+                    const response = await fetch('http://localhost:8000/int/v1/auth/sign-up', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            user: {
+                                name: modal.getOption('name'),
+                                email: modal.getOption('email'),
+                                password: modal.getOption('password'),
+                                password_confirmation: modal.getOption('password_confirm'),
+                            },
+                            company: {
+                                name: modal.getOption('organization_name'),
+                            },
+                        }),
+                    });
+
+                    if (response.ok) {
+                        this.notifications.success('Organisation créée avec succès !');
+                        this.router.refresh();
+                        modal.done();
+                    } else {
+                        const error = await response.json();
+                        this.notifications.serverError(error);
+                        modal.stopLoading();
+                    }
+                } catch (err) {
+                    this.notifications.serverError(err);
+                    modal.stopLoading();
+                }
+            },
+        });
     }
 }

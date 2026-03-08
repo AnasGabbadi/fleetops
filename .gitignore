@@ -19,3 +19,7 @@ bootstrap/cache/
 # Build
 dist/
 build/
+
+# Personal notes (NE PAS committer)
+CLAUDE.md
+myConf.md

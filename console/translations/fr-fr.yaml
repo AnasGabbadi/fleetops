@@ -772,3 +772,8 @@ layout:
         view-profile: Voir le profil
         keyboard-shortcuts: Afficher les raccourcis clavier
         changelog: Journal des modifications
+
+nav:
+  fleet-management: Gestion de Flotte
+  access-management: Gestion des Accès
+

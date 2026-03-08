@@ -1,0 +1,589 @@
+diff --git a/addon/components/driver/form.hbs b/addon/components/driver/form.hbs
+index 3ae299177be835dd1e9530ecc4057e8c3015ddf9..e06741d2c8d8a4d49227f624ae263405535fc9bc 100644
+--- a/addon/components/driver/form.hbs
++++ b/addon/components/driver/form.hbs
+@@ -93,7 +93,7 @@
+                 />
+             </InputGroup>
+ 
+-            <InputGroup @name={{t "driver.fields.vendor"}}>
++            {{!-- <InputGroup @name={{t "driver.fields.vendor"}}>
+                 <ModelSelect
+                     @modelName="vendor"
+                     @selectedModel={{@resource.vendor}}
+@@ -107,7 +107,7 @@
+                 >
+                     {{model.name}}
+                 </ModelSelect>
+-            </InputGroup>
++            </InputGroup> --}}
+ 
+             <InputGroup @name={{t "resource.vehicle"}}>
+                 <ModelSelect
+@@ -157,9 +157,9 @@
+                     </PowerSelect>
+                 </div>
+             </InputGroup>
+-            <InputGroup @name={{t "common.coordinates"}} @wrapperClass="col-span-2">
++            {{!-- <InputGroup @name={{t "common.coordinates"}} @wrapperClass="col-span-2">
+                 <ModelCoordinatesInput @model={{@resource}} @disabled={{cannot-write @resource}} @autocomplete="location" />
+-            </InputGroup>
++            </InputGroup> --}}
+         </div>
+         <RegistryYield @registry="fleet-ops:component:driver:form:details" as |RegistryComponent|>
+             <RegistryComponent @resource={{@resource}} @controller={{this.controller}} @permission={{get-write-permission @resource}} />
+@@ -176,7 +176,7 @@
+         <AvatarPicker @model={{@resource}} @defaultAvatar={{config "defaultValues.driverAvatar"}} />
+     </ContentPanel>
+ 
+-    <ContentPanel @title={{t "common.metadata"}} @open={{true}} @wrapperClass="bordered-top">
++    <ContentPanel @title={{"formations supplémentaires"}} @open={{true}} @wrapperClass="bordered-top">
+         <MetadataEditor @value={{@resource.meta}} @onChange={{fn (mut @resource.meta)}} />
+     </ContentPanel>
+ </div>
+\ No newline at end of file
+diff --git a/addon/components/layout/fleet-ops-sidebar.js b/addon/components/layout/fleet-ops-sidebar.js
+index f075267d0d5e96895f9b22a9e9bfa048de7bd9ca..f9ed9274a76013253903a7c02d02e51070ef683d 100644
+--- a/addon/components/layout/fleet-ops-sidebar.js
++++ b/addon/components/layout/fleet-ops-sidebar.js
+@@ -103,7 +103,7 @@ export default class LayoutFleetOpsSidebarComponent extends Component {
+                 icon: 'warehouse',
+                 route: 'management.vendors',
+                 permission: 'fleet-ops list vendor',
+-                visible: this.abilities.can('fleet-ops see vendor'),
++                visible: false,//this.abilities.can('fleet-ops see vendor'),
+             },
+             {
+                 intl: 'menu.contacts',
+@@ -111,7 +111,7 @@ export default class LayoutFleetOpsSidebarComponent extends Component {
+                 icon: 'address-book',
+                 route: 'management.contacts',
+                 permission: 'fleet-ops list contact',
+-                visible: this.abilities.can('fleet-ops see contact'),
++                visible: false,//this.abilities.can('fleet-ops see contact'),
+             },
+             {
+                 intl: 'menu.places',
+@@ -119,7 +119,7 @@ export default class LayoutFleetOpsSidebarComponent extends Component {
+                 icon: 'location-dot',
+                 route: 'management.places',
+                 permission: 'fleet-ops list place',
+-                visible: this.abilities.can('fleet-ops see place'),
++                visible: false,//this.abilities.can('fleet-ops see place'),
+             },
+             {
+                 intl: 'menu.fuel-reports',
+@@ -135,7 +135,7 @@ export default class LayoutFleetOpsSidebarComponent extends Component {
+                 icon: 'triangle-exclamation',
+                 route: 'management.issues',
+                 permission: 'fleet-ops list issue',
+-                visible: this.abilities.can('fleet-ops see issue'),
++                visible: false,//this.abilities.can('fleet-ops see issue'),
+             },
+         ];
+ 
+@@ -191,22 +191,22 @@ export default class LayoutFleetOpsSidebarComponent extends Component {
+                 permission: 'fleet-ops list work-order',
+                 visible: this.abilities.can('fleet-ops see work-order'),
+             },
+-            {
+-                intl: 'menu.equipment',
+-                title: this.intl.t('menu.equipment'),
+-                icon: 'trailer',
+-                route: 'maintenance.equipment',
+-                permission: 'fleet-ops list equipment',
+-                visible: this.abilities.can('fleet-ops see equipment'),
+-            },
+-            {
+-                intl: 'menu.parts',
+-                title: this.intl.t('menu.parts'),
+-                icon: 'cog',
+-                route: 'maintenance.parts',
+-                permission: 'fleet-ops list part',
+-                visible: this.abilities.can('fleet-ops see part'),
+-            },
++            // {
++            //     intl: 'menu.equipment',
++            //     title: this.intl.t('menu.equipment'),
++            //     icon: 'trailer',
++            //     route: 'maintenance.equipment',
++            //     permission: 'fleet-ops list equipment',
++            //     visible: this.abilities.can('fleet-ops see equipment'),
++            // },
++            // {
++            //     intl: 'menu.parts',
++            //     title: this.intl.t('menu.parts'),
++            //     icon: 'cog',
++            //     route: 'maintenance.parts',
++            //     permission: 'fleet-ops list part',
++            //     visible: this.abilities.can('fleet-ops see part'),
++            // },
+         ];
+ 
+         const analyticsItems = [
+@@ -235,7 +235,7 @@ export default class LayoutFleetOpsSidebarComponent extends Component {
+                 icon: 'cash-register',
+                 route: 'settings.payments',
+                 permission: 'fleet-ops view payments',
+-                visible: this.abilities.can('fleet-ops see payments'),
++                visible: false,//this.abilities.can('fleet-ops see payments'),
+             },
+             {
+                 intl: 'menu.notifications',
+@@ -259,7 +259,7 @@ export default class LayoutFleetOpsSidebarComponent extends Component {
+                 icon: 'rectangle-list',
+                 route: 'settings.custom-fields',
+                 permission: 'fleet-ops view custom-field',
+-                visible: this.abilities.can('fleet-ops see custom-field'),
++                visible: false,//this.abilities.can('fleet-ops see custom-field'),
+             },
+             {
+                 intl: 'menu.avatars',
+@@ -281,26 +281,26 @@ export default class LayoutFleetOpsSidebarComponent extends Component {
+         });
+ 
+         this.menuPanels = this.removeEmptyMenuPanels([
+-            createPanel('menu.operations', 'operations', operationsItems, {
+-                open: this.appCache.get('fleet-ops:sidebar:operations:open', true),
+-                onToggle: (open) => this.appCache.set('fleet-ops:sidebar:operations:open', open),
+-            }),
++            // createPanel('menu.operations', 'operations', operationsItems, {
++            //     open: this.appCache.get('fleet-ops:sidebar:operations:open', true),
++            //     onToggle: (open) => this.appCache.set('fleet-ops:sidebar:operations:open', open),
++            // }),
+             createPanel('menu.resources', 'management', resourcesItems, {
+                 open: this.appCache.get('fleet-ops:sidebar:management:open', true),
+                 onToggle: (open) => this.appCache.set('fleet-ops:sidebar:management:open', open),
+             }),
+-            // createPanel('menu.maintenance', 'maintenance', maintenanceItems, {
+-            //     open: this.appCache.get('fleet-ops:sidebar:maintenance:open', false),
+-            //     onToggle: (open) => this.appCache.set('fleet-ops:sidebar:maintenance:open', open),
+-            // }),
+-            createPanel('menu.connectivity', 'connectivity', connectivityItems, {
+-                open: this.appCache.get('fleet-ops:sidebar:connectivity:open', false),
+-                onToggle: (open) => this.appCache.set('fleet-ops:sidebar:connectivity:open', open),
+-            }),
+-            createPanel('menu.analytics', 'analytics', analyticsItems, {
+-                open: this.appCache.get('fleet-ops:sidebar:analytics:open', false),
+-                onToggle: (open) => this.appCache.set('fleet-ops:sidebar:analytics:open', open),
++            createPanel('menu.maintenance', 'maintenance', maintenanceItems, {
++                open: this.appCache.get('fleet-ops:sidebar:maintenance:open', false),
++                onToggle: (open) => this.appCache.set('fleet-ops:sidebar:maintenance:open', open),
+             }),
++            // createPanel('menu.connectivity', 'connectivity', connectivityItems, {
++            //     open: this.appCache.get('fleet-ops:sidebar:connectivity:open', false),
++            //     onToggle: (open) => this.appCache.set('fleet-ops:sidebar:connectivity:open', open),
++            // }),
++            // createPanel('menu.analytics', 'analytics', analyticsItems, {
++            //     open: this.appCache.get('fleet-ops:sidebar:analytics:open', false),
++            //     onToggle: (open) => this.appCache.set('fleet-ops:sidebar:analytics:open', open),
++            // }),
+             createPanel('menu.settings', 'settings', settingsItems, {
+                 open: this.appCache.get('fleet-ops:sidebar:settings:open', true),
+                 onToggle: (open) => this.appCache.set('fleet-ops:sidebar:settings:open', open),
+diff --git a/addon/components/vehicle/form.hbs b/addon/components/vehicle/form.hbs
+index fd1a86e75c83b671aa6b9adacd7b56dd99e13d3e..ebb3f916054762f5be8454614e9c7b808f8d72bc 100644
+--- a/addon/components/vehicle/form.hbs
++++ b/addon/components/vehicle/form.hbs
+@@ -49,26 +49,71 @@
+                 <Input @value={{@resource.plate_number}} @type="text" class="w-full form-input" placeholder={{t "vehicle.fields.plate-number"}} disabled={{cannot-write @resource}} />
+             </InputGroup>
+ 
+-            <InputGroup @name={{t "vehicle.fields.vin-number"}}>
++            {{!-- <InputGroup @name={{t "vehicle.fields.vin-number"}}>
+                 <Input @value={{@resource.vin}} @type="text" class="w-full form-input" placeholder={{t "vehicle.fields.vin-number"}} disabled={{cannot-write @resource}} />
+-            </InputGroup>
++            </InputGroup> --}}
+ 
+-            <InputGroup @name={{t "vehicle.fields.make"}}>
++            {{!-- <InputGroup @name={{t "vehicle.fields.make"}}>
+                 <Input @value={{@resource.make}} @type="text" class="w-full form-input" placeholder={{t "vehicle.fields.vehicle-make"}} disabled={{cannot-write @resource}} />
++            </InputGroup> --}}
++            <InputGroup @name={{t "vehicle.fields.make"}}>
++                <div class="fleetbase-model-select fleetbase-power-select ember-model-select">
++                    <PowerSelect
++                        @options={{array "Renault" "Dacia" "Peugeot" "Citroën" "Toyota" "Hyundai" "Kia" "Volkswagen" "Ford" "Fiat" "Mercedes-Benz" "BMW" "Nissan" "Honda" "Suzuki" "Mitsubishi" "Chevrolet" "Opel" "Seat" "Skoda"}}
++                        @selected={{@resource.make}}
++                        @onChange={{this.setMake}}
++                        @placeholder="Sélectionner une marque"
++                        @triggerClass="form-select form-input"
++                        @disabled={{cannot-write @resource}}
++                        as |option|
++                    >
++                        {{option}}
++                    </PowerSelect>
++                </div>
+             </InputGroup>
+ 
+-            <InputGroup @name={{t "vehicle.fields.model"}}>
++            {{!-- <InputGroup @name={{t "vehicle.fields.model"}}>
+                 <Input @value={{@resource.model}} @type="text" class="w-full form-input" placeholder={{t "vehicle.fields.vehicle-model"}} disabled={{cannot-write @resource}} />
++            </InputGroup> --}}
++            <InputGroup @name={{t "vehicle.fields.model"}}>
++                <div class="fleetbase-model-select fleetbase-power-select ember-model-select">
++                    <PowerSelect
++                        @options={{array "Clio" "Logan" "Sandero" "Kangoo" "208" "308" "3008" "Corolla" "Yaris" "Hilux" "Tucson" "Sportage" "Polo" "Golf" "Transit" "Sprinter" "Vito" "Navara" "Patrol" "Duster" "Dokker" "Berlingo" "Jumpy" "HiAce" "Fortuner" "Transporter"}}
++                        @selected={{@resource.model}}
++                        @onChange={{this.setModel}}
++                        @placeholder="Sélectionner un modèle"
++                        @triggerClass="form-select form-input"
++                        @disabled={{cannot-write @resource}}
++                        as |option|
++                    >
++                        {{option}}
++                    </PowerSelect>
++                </div>
+             </InputGroup>
+ 
+-            <InputGroup @name={{t "vehicle.fields.year"}}>
++            {{!-- <InputGroup @name={{t "vehicle.fields.year"}}>
+                 <Input @value={{@resource.year}} @type="text" class="w-full form-input" placeholder={{t "vehicle.fields.vehicle-year"}} disabled={{cannot-write @resource}} />
++            </InputGroup> --}}
++            <InputGroup @name="Version">
++                <div class="fleetbase-model-select fleetbase-power-select ember-model-select">
++                    <PowerSelect
++                        @options={{array "2018" "2019" "2020" "2021" "2022" "2023" "2024" "2025"}}
++                        @selected={{@resource.year}}
++                        @onChange={{this.setYear}}
++                        @placeholder="Sélectionner l'année"
++                        @triggerClass="form-select form-input"
++                        @disabled={{cannot-write @resource}}
++                        as |option|
++                    >
++                        {{option}}
++                    </PowerSelect>
++                </div>
+             </InputGroup>
+ 
+-            <InputGroup @value={{@resource.trim}} @name="Trim" @placeholder="Trim" />
++            {{!-- <InputGroup @value={{@resource.trim}} @name="Trim" @placeholder="Trim" /> --}}
+             <InputGroup @value={{@resource.color}} @name="Color" @placeholder="Vehicle Color" />
+             <InputGroup @value={{@resource.serial_number}} @name="Serial Number" @placeholder="Serial Number" />
+-            <InputGroup @value={{@resource.class}} @name="Class" @placeholder="Class" />
++            {{!-- <InputGroup @value={{@resource.class}} @name="Class" @placeholder="Class" /> --}}
+ 
+             {{! Assignment & Status }}
+             <div class="col-span-1 lg:col-span-2 text-[11px] uppercase tracking-wide text-gray-500 font-semibold mt-3">
+@@ -110,16 +155,16 @@
+                 </div>
+             </InputGroup>
+ 
+-            <InputGroup @value={{@resource.call_sign}} @name="Call Sign" @placeholder="Call Sign" />
++            {{!-- <InputGroup @value={{@resource.call_sign}} @name="Call Sign" @placeholder="Call Sign" /> --}}
+ 
+             {{! Location }}
+-            <div class="col-span-1 lg:col-span-2 text-[11px] uppercase tracking-wide text-gray-500 font-semibold mt-3">
++            {{!-- <div class="col-span-1 lg:col-span-2 text-[11px] uppercase tracking-wide text-gray-500 font-semibold mt-3">
+                 Location
+             </div>
+ 
+             <InputGroup @name={{t "common.coordinates"}} @wrapperClass="col-span-2">
+                 <ModelCoordinatesInput @model={{@resource}} @disabled={{cannot-write @resource}} @autocomplete="location" />
+-            </InputGroup>
++            </InputGroup> --}}
+         </div>
+ 
+         <RegistryYield @registry="fleet-ops:component:vehicle:form:details" as |RegistryComponent|>
+@@ -127,7 +172,7 @@
+         </RegistryYield>
+     </ContentPanel>
+ 
+-    {{! MEASUREMENT & UNITS / ODOMETER }}
++    {{!-- {{! MEASUREMENT & UNITS / ODOMETER }}
+     <ContentPanel @title="Measurement & Units" @open={{true}} @wrapperClass="bordered-top">
+         <div class="grid grid-cols-1 gap-2 lg:grid-cols-2 lg:gap-2 no-input-group-padding text-xs">
+             <div class="col-span-1 lg:col-span-2 text-[11px] uppercase tracking-wide text-gray-500 font-semibold mt-1">
+@@ -199,7 +244,7 @@
+ 
+             <InputGroup @value={{@resource.odometer_at_purchase}} @name="Odometer at Purchase" @type="number" @placeholder="Odometer reading at purchase" />
+         </div>
+-    </ContentPanel>
++    </ContentPanel> --}}
+ 
+     {{! BODY & USAGE }}
+     <ContentPanel @title="Body & Usage" @open={{true}} @wrapperClass="bordered-top">
+@@ -227,7 +272,7 @@
+                 </div>
+             </InputGroup>
+ 
+-            <InputGroup @name="Body Subtype">
++            {{!-- <InputGroup @name="Body Subtype">
+                 <div class="fleetbase-model-select fleetbase-power-select ember-model-select">
+                     <PowerSelect
+                         @options={{get-fleet-ops-options "vehicleBodySubTypes"}}
+@@ -244,9 +289,9 @@
+                         </div>
+                     </PowerSelect>
+                 </div>
+-            </InputGroup>
++            </InputGroup> --}}
+ 
+-            <InputGroup @name="Usage Type">
++            {{!-- <InputGroup @name="Usage Type">
+                 <div class="fleetbase-model-select fleetbase-power-select ember-model-select">
+                     <PowerSelect
+                         @options={{get-fleet-ops-options "vehicleUsageTypes"}}
+@@ -263,7 +308,7 @@
+                         </div>
+                     </PowerSelect>
+                 </div>
+-            </InputGroup>
++            </InputGroup> --}}
+ 
+             <InputGroup @name="Ownership Type">
+                 <div class="fleetbase-model-select fleetbase-power-select ember-model-select">
+@@ -303,29 +348,29 @@
+                 </div>
+             </InputGroup>
+ 
+-            <InputGroup @name="Transmission">
+-                <div class="fleetbase-model-select fleetbase-power-select ember-model-select">
+-                    <PowerSelect
+-                        @options={{get-fleet-ops-options "transmissionTypes"}}
+-                        @selected={{find-by "value" @resource.transmission (get-fleet-ops-options "transmissionTypes")}}
+-                        @onChange={{set-model-attr @resource "transmission"}}
+-                        @placeholder="Select transmission"
+-                        @triggerClass="form-select form-input"
+-                        @disabled={{cannot-write @resource}}
+-                        as |option|
+-                    >
+-                        <div class="text-sm">
+-                            <div class="font-semibold normalize-in-trigger">{{option.label}}</div>
+-                            <div class="hide-from-trigger">{{option.description}}</div>
+-                        </div>
+-                    </PowerSelect>
+-                </div>
+-            </InputGroup>
++                {{!-- <InputGroup @name="Transmission">
++                    <div class="fleetbase-model-select fleetbase-power-select ember-model-select">
++                        <PowerSelect
++                            @options={{get-fleet-ops-options "transmissionTypes"}}
++                            @selected={{find-by "value" @resource.transmission (get-fleet-ops-options "transmissionTypes")}}
++                            @onChange={{set-model-attr @resource "transmission"}}
++                            @placeholder="Select transmission"
++                            @triggerClass="form-select form-input"
++                            @disabled={{cannot-write @resource}}
++                            as |option|
++                        >
++                            <div class="text-sm">
++                                <div class="font-semibold normalize-in-trigger">{{option.label}}</div>
++                                <div class="hide-from-trigger">{{option.description}}</div>
++                            </div>
++                        </PowerSelect>
++                    </div>
++                </InputGroup> --}}
+         </div>
+     </ContentPanel>
+ 
+     {{! TECHNICAL SPECIFICATIONS (ENGINE, CAPACITY, REGULATORY) }}
+-    <ContentPanel @title="Technical Specifications" @open={{true}} @wrapperClass="bordered-top">
++    {{!-- <ContentPanel @title="Technical Specifications" @open={{true}} @wrapperClass="bordered-top">
+         <div class="grid grid-cols-1 lg:grid-cols-2 gap-2 no-input-group-padding text-xs">
+ 
+             {{! Powertrain & Engine }}
+@@ -442,7 +487,7 @@
+                 <Checkbox @value={{@resource.scr_equipped}} @label="SCR Equipped" @onToggle={{fn (mut @resource.scr_equipped)}} />
+             </InputGroup>
+         </div>
+-    </ContentPanel>
++    </ContentPanel> --}}
+ 
+     {{! FINANCIAL & LIFECYCLE }}
+     <ContentPanel @title="Financial & Lifecycle" @open={{true}} @wrapperClass="bordered-top">
+@@ -451,36 +496,36 @@
+                 Asset Values
+             </div>
+ 
+-            <InputGroup @name="Currency" @value={{@resource.currency}}>
++            {{!-- <InputGroup @name="Currency" @value={{@resource.currency}}>
+                 <CurrencySelect @currency={{@resource.currency}} @onCurrencyChange={{fn (mut @resource.currency)}} @triggerClass="w-full form-select" />
+             </InputGroup>
+-            <div></div>
++            <div></div> --}}
+ 
+             <InputGroup @name="Acquisition Cost">
+                 <MoneyInput @value={{@resource.acquisition_cost}} @currency={{@resource.currency}} />
+             </InputGroup>
+ 
+-            <InputGroup @name="Current Value">
++            {{!-- <InputGroup @name="Current Value">
+                 <MoneyInput @value={{@resource.current_value}} @currency={{@resource.currency}} />
+-            </InputGroup>
++            </InputGroup> --}}
+ 
+-            <InputGroup @name="Insurance Value">
++            {{!-- <InputGroup @name="Insurance Value">
+                 <MoneyInput @value={{@resource.insurance_value}} @currency={{@resource.currency}} />
+-            </InputGroup>
++            </InputGroup> --}}
+ 
+-            <InputGroup @name="Depreciation Rate (%)">
++            {{!-- <InputGroup @name="Depreciation Rate (%)">
+                 <Input @value={{@resource.depreciation_rate}} @type="number" step="0.01" class="form-input w-full" />
+-            </InputGroup>
++            </InputGroup> --}}
+ 
+             <div class="col-span-1 lg:col-span-2 text-[11px] uppercase tracking-wide text-gray-500 font-semibold mt-3">
+                 Lifecycle & Service Life
+             </div>
+ 
+-            <InputGroup @name="Estimated Service Life (Distance)">
++            {{!-- <InputGroup @name="Estimated Service Life (Distance)">
+                 <Input @value={{@resource.estimated_service_life_distance}} @type="number" class="form-input w-full" placeholder="Total distance" />
+-            </InputGroup>
++            </InputGroup> --}}
+ 
+-            <InputGroup @name="Service Life Distance Unit">
++            {{!-- <InputGroup @name="Service Life Distance Unit">
+                 <div class="fleetbase-model-select fleetbase-power-select ember-model-select">
+                     <PowerSelect
+                         @options={{get-fleet-ops-options "odometerUnits"}}
+@@ -501,7 +546,7 @@
+ 
+             <InputGroup @name="Estimated Service Life (Months)">
+                 <Input @value={{@resource.estimated_service_life_months}} @type="number" class="form-input w-full" />
+-            </InputGroup>
++            </InputGroup> --}}
+ 
+             <InputGroup @name="Purchase Date">
+                 <DatePicker
+@@ -512,16 +557,16 @@
+                 />
+             </InputGroup>
+ 
+-            <InputGroup @name="Lease Expiry Date">
++            {{!-- <InputGroup @name="Lease Expiry Date">
+                 <DatePicker
+                     @value={{or (format-date-fns @resource.lease_expires_at "dd-MM-yyyy") null}}
+                     @onChange={{fn (mut @resource.lease_expires_at)}}
+                     @placeholder="DD-MM-YYYY"
+                     class="filter-date-input w-full flex-1"
+                 />
+-            </InputGroup>
++            </InputGroup> --}}
+ 
+-            <div class="col-span-1 lg:col-span-2 text-[11px] uppercase tracking-wide text-gray-500 font-semibold mt-3">
++            {{!-- <div class="col-span-1 lg:col-span-2 text-[11px] uppercase tracking-wide text-gray-500 font-semibold mt-3">
+                 Financing (Loan)
+             </div>
+ 
+@@ -538,7 +583,7 @@
+                     @placeholder="DD-MM-YYYY"
+                     class="filter-date-input w-full flex-1"
+                 />
+-            </InputGroup>
++            </InputGroup> --}}
+         </div>
+     </ContentPanel>
+ 
+@@ -553,7 +598,7 @@
+         <AvatarPicker @model={{@resource}} @defaultAvatar={{config "defaultValues.vehicleAvatar"}} @disabled={{cannot-write @resource}} />
+     </ContentPanel>
+ 
+-    <ContentPanel @title={{t "common.metadata"}} @open={{true}} @wrapperClass="bordered-top">
++    <ContentPanel @title={{"formations supplémentaires"}} @open={{true}} @wrapperClass="bordered-top">
+         <MetadataEditor @value={{@resource.meta}} @onChange={{fn (mut @resource.meta)}} />
+     </ContentPanel>
+ </div>
+\ No newline at end of file
+diff --git a/addon/components/vehicle/form.js b/addon/components/vehicle/form.js
+index 9d5c6c7f30a349d87f3851c773416e9104d69022..8e8670020f77c9a968b68cb77a2bf6d5ea2da072 100644
+--- a/addon/components/vehicle/form.js
++++ b/addon/components/vehicle/form.js
+@@ -28,6 +28,18 @@ export default class VehicleFormComponent extends Component {
+             ...meta,
+         };
+     }
++    
++    @action setMake(value) {
++        this.args.resource.make = value;
++    }
++
++    @action setModel(value) {
++        this.args.resource.model = value;
++    }
++
++    @action setYear(value) {
++        this.args.resource.year = value;
++    }
+ 
+     @task *handlePhotoUpload(file) {
+         try {
+diff --git a/addon/controllers/management/vehicles/index/new.js b/addon/controllers/management/vehicles/index/new.js
+index 3c225e60b740f67f59ca1c0685de66a8a8ab314c..89fae36a3010902bb43276ebde0d4c3ec5626d01 100644
+--- a/addon/controllers/management/vehicles/index/new.js
++++ b/addon/controllers/management/vehicles/index/new.js
+@@ -16,6 +16,22 @@ export default class ManagementVehiclesIndexNewController extends Controller {
+     @tracked vehicle = this.store.createRecord('vehicle', DEFAULT_PROPERTIES);
+ 
+     @task *save(vehicle) {
++        // Validation des champs obligatoires
++        const requiredFields = [
++            { field: 'name', label: 'Nom' },
++            { field: 'plate_number', label: 'Immatriculation' },
++            { field: 'make', label: 'Marque' },
++            { field: 'model', label: 'Modèle' },
++            { field: 'year', label: 'Version' },
++        ];
++
++        for (const { field, label } of requiredFields) {
++            if (!vehicle[field]) {
++                this.notifications.warning(`Le champ "${label}" est obligatoire.`);
++                return;
++            }
++        }
++
+         try {
+             yield vehicle.save();
+             this.events.trackResourceCreated(vehicle);
+diff --git a/addon/routes/management/index.js b/addon/routes/management/index.js
+index 234976b163d056ba92efdea5746f84808ccf540f..ec52aa7a83e1a024a057641eb8c7b5fd4dce430c 100644
+--- a/addon/routes/management/index.js
++++ b/addon/routes/management/index.js
+@@ -1,3 +1,10 @@
+ import Route from '@ember/routing/route';
++import { inject as service } from '@ember/service';
+ 
+-export default class ManagementIndexRoute extends Route {}
++export default class ManagementIndexRoute extends Route {
++    @service hostRouter;
++
++    redirect() {
++        this.hostRouter.transitionTo('console.fleet-ops.management.vehicles');
++    }
++}
+diff --git a/addon/routes.js b/addon/routes.js
+index 7c68028c897814ef7049974b4fe1123a8d5ed584..bf47c58a6e138c91c540c0b1fd649a15dd3040ee 100644
+--- a/addon/routes.js
++++ b/addon/routes.js
+@@ -2,7 +2,7 @@ import buildRoutes from 'ember-engines/routes';
+ 
+ export default buildRoutes(function () {
+     this.route('virtual', { path: '/:section/:slug' });
+-    this.route('operations', { path: '/' }, function () {
++    this.route('operations', { path: '/operations' }, function () {
+         this.route('order-config', function () {});
+         this.route('service-rates', function () {
+             this.route('index', { path: '/' }, function () {
+@@ -29,7 +29,7 @@ export default buildRoutes(function () {
+             });
+         });
+     });
+-    this.route('management', { path: '/manage' }, function () {
++    this.route('management', { path: '/' }, function () {
+         this.route('fleets', function () {
+             this.route('index', { path: '/' }, function () {
+                 this.route('new');
+diff --git a/translations/fr-fr.yaml b/translations/fr-fr.yaml
+index 18694f2f826d932e1af03a1b4b1c676da80655f1..98cb1ff8a3a36f231c6281136e794c1d4a021304 100644
+--- a/translations/fr-fr.yaml
++++ b/translations/fr-fr.yaml
+@@ -45,7 +45,7 @@ menu:
+   scheduler: Planificateur
+   order-config: Configuration des commandes
+   resources: Ressources
+-  drivers: Chauffeurs
++  drivers: Conducteurs
+   vehicles: Véhicules
+   fleets: Flottes
+   vendors: Fournisseurs

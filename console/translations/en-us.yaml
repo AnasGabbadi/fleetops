@@ -794,3 +794,7 @@ layout:
         view-profile: View profile
         keyboard-shortcuts: Show keyboard shortcuts
         changelog: Changelog
+
+nav:
+  fleet-management: Fleet Management
+  access-management: Access Management

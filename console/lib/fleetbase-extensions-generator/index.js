@@ -165,11 +165,38 @@ module.exports = {
             const extensionContent = fs.readFileSync(extensionPath, 'utf8');
             const mountPath = extension.fleetbase?.route || this.getExtensionMountPath(extension.name);
             const shimFile = path.join(extensionsDir, `${mountPath}.js`);
-            const fileContent = this.getGeneratedFileHeader() + extensionContent;
+            let fileContent = this.getGeneratedFileHeader() + extensionContent;
+
+            fileContent = this.applyKounHanyCustomizations(fileContent, mountPath);
 
             fs.writeFileSync(shimFile, fileContent, 'utf8');
             console.log(`[Fleetbase]   ✓ Generated app/extensions/${mountPath}.js`);
         });
+    },
+
+    applyKounHanyCustomizations(content, mountPath) {
+        // Ignorer Storefront, Developers, Extensions
+        if (['storefront', 'developers', 'registry-bridge'].includes(mountPath)) {
+            content = content.replace(
+                /menuService\.registerHeaderMenuItem\(/g,
+                '// menuService.registerHeaderMenuItem('
+            );
+        }
+        // Renommer Fleet-Ops → Fleet Management
+        if (mountPath === 'fleet-ops') {
+            content = content.replace(
+                "registerHeaderMenuItem('Fleet-Ops'",
+                "registerHeaderMenuItem('Fleet Management'"
+            );
+        }
+        // Renommer IAM → Access Management
+        if (mountPath === 'iam') {
+            content = content.replace(
+                "registerHeaderMenuItem('IAM'",
+                "registerHeaderMenuItem('Access Management'"
+            );
+        }
+        return content;
     },
 
     generateExtensionLoaders(extensions) {

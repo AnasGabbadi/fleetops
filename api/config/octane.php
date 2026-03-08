@@ -221,5 +221,6 @@ return [
     */
 
     'max_execution_time' => 30,
-
+    'memory_limit' => 256,
+    'max_requests' => 50,
 ];

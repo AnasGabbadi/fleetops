@@ -752,3 +752,7 @@ layout:
         view-profile: عرض الملف الشخصي
         keyboard-shortcuts: عرض اختصارات لوحة المفاتيح
         changelog: سجل التغييرات
+
+nav:
+  fleet-management: إدارة الأسطول
+  access-management: إدارة الوصول
