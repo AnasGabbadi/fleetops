@@ -32,14 +32,8 @@ cp /fleetbase/packages/fleetops/translations/fr-fr.yaml \
 cp /fleetbase/packages/fleetops/addon/routes.js \
 /fleetbase/console/node_modules/@fleetbase/fleetops-engine/addon/routes.js
 
-cp /fleetbase/packages/fleetops/addon/components/driver/form.hbs \
-/fleetbase/console/node_modules/@fleetbase/fleetops-engine/addon/components/driver/form.hbs
-
 cp /fleetbase/packages/fleetops/addon/components/vehicle/details.hbs \
 /fleetbase/console/node_modules/@fleetbase/fleetops-engine/addon/components/vehicle/details.hbs
-
-cp /fleetbase/packages/fleetops/addon/components/vehicle/form.js \
-/fleetbase/console/node_modules/@fleetbase/fleetops-engine/addon/components/vehicle/form.js
 
 cp /fleetbase/packages/ember-ui/addon/utils/get-currency.js \
 /fleetbase/console/node_modules/@fleetbase/ember-ui/addon/utils/get-currency.js
@@ -50,8 +44,8 @@ cp /fleetbase/packages/fleetops/addon/controllers/management/vehicles/index.js \
 cp /fleetbase/packages/fleetops/addon/components/layout/fleet-ops-sidebar.js \
 /fleetbase/console/node_modules/@fleetbase/fleetops-engine/addon/components/layout/fleet-ops-sidebar.js
 
-# ✅ FIX: Vehicle appends circular relation (ligne 223)
-echo "🔧 Appliquant le fix Vehicle appends..."
+# ✅ FIX: Vehicle appends circular relation + customize form
+echo "🔧 Appliquant le fix Vehicle appends et customisations formulaire..."
 cp /fleetbase/packages/fleetops/server/src/Models/Vehicle.php \
 /fleetbase/api/vendor/fleetbase/fleetops-api/server/src/Models/Vehicle.php
 
@@ -63,6 +57,14 @@ cp /fleetbase/packages/fleetops/server/src/Http/Controllers/Api/v1/VehicleContro
 cp /fleetbase/packages/fleetops-data/addon/models/vehicle.js \
 /fleetbase/console/node_modules/@fleetbase/fleetops-data/addon/models/vehicle.js
 
+cp /fleetbase/api/vendor/fleetbase/fleetops-api/server/src/Http/Resources/v1/VehicleWithoutDriver.php \
+/fleetbase/packages/fleetops/server/src/Http/Resources/v1/VehicleWithoutDriver.php
+
+# 🔄 Exécuter les migrations pour les nouveaux champs de financement
+echo "🔄 Exécution des migrations..."
+cd /fleetbase/api
+php artisan migrate --force
+
 # 🔄 Redémarrage d'Octane
 echo "🔄 Redémarrage d'Octane..."
 cd /fleetbase/api
@@ -70,4 +72,4 @@ pkill -f "php artisan octane" || true
 sleep 2
 php artisan octane:reload 2>/dev/null || true
 
-echo "✅ Synchronisation et installation terminées!"
+echo "✅ Synchronisation, migrations et installation terminées!"
