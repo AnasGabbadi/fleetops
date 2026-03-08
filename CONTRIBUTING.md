@@ -1,47 +1,74 @@
-# Contributing to Fleetbase
-We love your input! We want to make contributing to this project as easy and transparent as possible, whether it's:
+# How To Contribute
 
-- Reporting a bug
-- Discussing the current state of the code
-- Submitting a fix
-- Proposing new features
-- Becoming a maintainer
+## Process
 
-## We Develop with Github
-We use github to host code, to track issues and feature requests, as well as accept pull requests.
+1. Fork the project
+1. Create a new branch
+1. Code, test, commit and push
+1. Open a pull request detailing your changes. Make sure to follow the [template](.github/PULL_REQUEST_TEMPLATE.md)
 
-## We Use [Github Flow](https://guides.github.com/introduction/flow/index.html), So All Code Changes Happen Through Pull Requests
-Pull requests are the best way to propose changes to the codebase (we use [Github Flow](https://guides.github.com/introduction/flow/index.html)). We actively welcome your pull requests:
+## Guidelines
 
-1. Fork the repo and create your branch from `main`.
-2. If you've added code that should be tested, add tests.
-3. If you've changed APIs, update the documentation.
-4. Ensure the test suite passes.
-5. Make sure your code lints.
-6. Issue that pull request!
+* Please ensure the coding style running `composer lint`.
+* Send a coherent commit history, making sure each individual commit in your pull request is meaningful.
+* You may need to [rebase](https://git-scm.com/book/en/v2/Git-Branching-Rebasing) to avoid merge conflicts.
+* Please remember that we follow [SemVer](http://semver.org/).
 
-## Any contributions you make will be under the AGPL v3 Software License
-In short, when you submit code changes, your submissions are understood to be under the same [AGPL v3](https://choosealicense.com/licenses/agpl-3.0/) that covers the project. Feel free to contact the maintainers if that's a concern.
+## Installation
 
-## Report bugs using Github's [issues](https://github.com/fleetbase/fleetbase/issues)
-We use GitHub issues to track public bugs. Report a bug by [opening a new issue](https://github.com/fleetbase/fleetbase/issues), it's that easy!
+* `git clone <repository-url>`
+* `cd fleetops`
+* `pnpm install`
+* `composer install`
 
-## Write bug reports with detail, background, and sample code
+## Linting
 
-**Great Bug Reports** tend to have:
+* `yarn lint`
+* `yarn lint:fix`
 
-- A quick summary and/or background
-- Steps to reproduce
-  - Be specific!
-  - Give sample code if you can. 
-- What you expected would happen
-- What actually happens
-- Notes (possibly including why you think this might be happening, or stuff you tried that didn't work)
+## Running tests
 
-People *love* thorough bug reports. I'm not even kidding.
+* `ember test` – Runs the test suite on the current Ember version
+* `ember test --server` – Runs the test suite in "watch mode"
+* `ember try:each` – Runs the test suite against multiple Ember versions
 
-## License
-By contributing, you agree that your contributions will be licensed under its AGPL v3 Software License.
+## Running the dummy application
 
-## References
-This document was adapted from the open-source contribution guidelines for [Facebook's Draft](https://github.com/facebook/draft-js/blob/a9316a723f9e918afde44dea68b5f9f39b7d9b00/CONTRIBUTING.md)
+* `ember serve`
+* Visit the dummy application at [http://localhost:4200](http://localhost:4200).
+
+For more information on using ember-cli, visit [https://cli.emberjs.com/release/](https://cli.emberjs.com/release/).
+
+# CONTRIBUTING
+
+Contributions are welcome, and are accepted via pull requests.
+Please review these guidelines before submitting any pull requests.
+
+## Setup
+
+Clone your fork, then install the dev dependencies:
+```bash
+composer install
+```
+## Lint
+
+Lint your code:
+```bash
+composer lint
+```
+## Tests
+
+Run all tests:
+```bash
+composer test
+```
+
+Check types:
+```bash
+composer test:types
+```
+
+Unit tests:
+```bash
+composer test:unit
+```

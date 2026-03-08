@@ -1,25 +1,39 @@
-# Dependencies
-node_modules/
-vendor/
+# compiled output
+/dist/
+/declarations/
 
-# Environment
-.env
-.env.local
+# dependencies
+/node_modules/
+/scripts/node_modules/
 
-# Cache & Logs
-storage/
-bootstrap/cache/
-*.log
+# misc
+/.env*
+/.pnp*
+/.eslintcache
+/coverage/
+/npm-debug.log*
+/testem.log
+/yarn-error.log
 
-# OS
+# ember-try
+/.node_modules.ember-try/
+/npm-shrinkwrap.json.ember-try
+/package.json.ember-try
+/package-lock.json.ember-try
+/yarn.lock.ember-try
+
+# broccoli-debug
+/DEBUG/
+
+# server
+.idea/*
+.idea/codeStyleSettings.xml
+composer.lock
+/server_vendor
+/server/vendor/
+.phpunit.result.cache
+.php_cs.cache
+.php-cs-fixer.cache
+*.swp
+*.swo
 .DS_Store
-.idea/
-.vscode/
-
-# Build
-dist/
-build/
-
-# Personal notes (NE PAS committer)
-CLAUDE.md
-myConf.md
