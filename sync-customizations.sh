@@ -22,6 +22,12 @@ cp /fleetbase/packages/fleetops/addon/controllers/management/vehicles/index/new.
 cp /fleetbase/packages/fleetops/addon/components/driver/form.hbs \
 /fleetbase/console/node_modules/@fleetbase/fleetops-engine/addon/components/driver/form.hbs
 
+cp /fleetbase/packages/fleetops/addon/components/driver/details.hbs \
+/fleetbase/console/node_modules/@fleetbase/fleetops-engine/addon/components/driver/details.hbs
+
+cp /fleetbase/packages/fleetops/addon/components/modals/driver-details.hbs \
+/fleetbase/console/node_modules/@fleetbase/fleetops-engine/addon/components/modals/driver-details.hbs
+
 cp /fleetbase/packages/fleetops/translations/fr-fr.yaml \
 /fleetbase/console/node_modules/@fleetbase/fleetops-engine/translations/fr-fr.yaml
 
@@ -51,9 +57,26 @@ cp /fleetbase/packages/fleetops/server/src/Http/Resources/v1/VehicleWithoutDrive
 cp /fleetbase/packages/fleetops/server/src/Http/Controllers/Api/v1/VehicleController.php \
 /fleetbase/api/vendor/fleetbase/fleetops-api/server/src/Http/Controllers/Api/v1/VehicleController.php
 
+# Backend Driver Models & Resources (packages → vendor)
+echo "🔧 Appliquant les customisations Driver..."
+cp /fleetbase/packages/fleetops/server/src/Models/Driver.php \
+/fleetbase/api/vendor/fleetbase/fleetops-api/server/src/Models/Driver.php
+
+cp /fleetbase/packages/fleetops/server/src/Http/Resources/v1/Driver.php \
+/fleetbase/api/vendor/fleetbase/fleetops-api/server/src/Http/Resources/v1/Driver.php
+
+cp /fleetbase/packages/fleetops/server/src/Http/Controllers/Api/v1/DriverController.php \
+/fleetbase/api/vendor/fleetbase/fleetops-api/server/src/Http/Controllers/Api/v1/DriverController.php
+
+cp /fleetbase/packages/fleetops/addon/controllers/management/drivers/index.js \
+/fleetbase/console/node_modules/@fleetbase/fleetops-engine/addon/controllers/management/drivers/index.js
+
 # Frontend Models (packages → node_modules)
 cp /fleetbase/packages/fleetops-data/addon/models/vehicle.js \
 /fleetbase/console/node_modules/@fleetbase/fleetops-data/addon/models/vehicle.js
+
+cp /fleetbase/packages/fleetops-data/addon/models/driver.js \
+/fleetbase/console/node_modules/@fleetbase/fleetops-data/addon/models/driver.js
 
 # 🔄 Exécuter les migrations
 echo "🔄 Exécution des migrations..."
