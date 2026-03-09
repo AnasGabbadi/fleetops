@@ -29,10 +29,6 @@
 [submodule "packages/fleetbase-extensions-indexer"]
 	path = packages/fleetbase-extensions-indexer
 	url = https://github.com/AnasGabbadi/fleetbase-extensions-indexer.git
-[submodule "packages/fleetops-data"]
-	path = packages/fleetops-data
-	url = https://github.com/AnasGabbadi/fleetops-data.git
-	branch = main
 [submodule "docs"]
 	path = docs
 	url = https://github.com/AnasGabbadi/docs.git
