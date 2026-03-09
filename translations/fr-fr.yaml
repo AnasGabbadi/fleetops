@@ -38,6 +38,7 @@ common:
   new-address: Nouvelle adresse
   select-address: Sélectionner une adresse
 menu:
+  services: Services
   operations: Opérations
   dashboard: Tableau de bord
   orders: Commandes
