@@ -287,11 +287,11 @@ export default class LayoutFleetOpsSidebarComponent extends Component {
                 open: this.appCache.get('fleet-ops:sidebar:management:open', true),
                 onToggle: (open) => this.appCache.set('fleet-ops:sidebar:management:open', open),
             }),
-            createPanel('menu.maintenance', 'maintenance', servicesItems, {
-                open: this.appCache.get('fleet-ops:sidebar:maintenance:open', false),
-                onToggle: (open) => this.appCache.set('fleet-ops:sidebar:maintenance:open', open),
+            createPanel('menu.services', 'services', servicesItems, {
+                open: this.appCache.get('fleet-ops:sidebar:services:open', false),
+                onToggle: (open) => this.appCache.set('fleet-ops:sidebar:services:open', open),
                 title: 'Services',
-            }),
+            })
             // createPanel('menu.connectivity', 'connectivity', connectivityItems, {
             //     open: this.appCache.get('fleet-ops:sidebar:connectivity:open', false),
             //     onToggle: (open) => this.appCache.set('fleet-ops:sidebar:connectivity:open', open),
