@@ -1,11 +1,11 @@
 <div class="form-wrapper" ...attributes>
-    <ContentPanel @title={{t "driver.fields.user-account"}} @open={{true}} @actionButtons={{this.userAccountActionButtons}} @wrapperClass="bordered-top">
+    <ContentPanel @title="Compte utilisateur" @open={{true}} @actionButtons={{this.userAccountActionButtons}} @wrapperClass="bordered-top">
         <div class="space-y-2">
-            <InputGroup @name={{t "driver.fields.user-account"}} @helpText={{t "driver.fields.user-account-help-text"}}>
+            <InputGroup @name="Compte utilisateur" @helpText="Sélectionnez un utilisateur pour ce conducteur">
                 <ModelSelect
                     @modelName="user"
                     @selectedModel={{@resource.user}}
-                    @placeholder={{t "driver.fields.select-user"}}
+                    @placeholder="Sélectionner un utilisateur"
                     @query={{hash doesnt_have_driver=true}}
                     @triggerClass="form-select form-input"
                     @infiniteScroll={{false}}
@@ -34,13 +34,13 @@
             </InputGroup>
             {{#if @resource.user}}
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-2 no-input-group-padding">
-                    <InputGroup @name={{t "common.name"}} @wrapperClass="col-span-2 mb-0i">
-                        <Input @value={{@resource.user.name}} @type="text" class="w-full form-input" placeholder={{t "common.name"}} disabled={{true}} />
+                    <InputGroup @name="Nom" @wrapperClass="col-span-2 mb-0i">
+                        <Input @value={{@resource.user.name}} @type="text" class="w-full form-input" placeholder="Nom" disabled={{true}} />
                     </InputGroup>
-                    <InputGroup @name={{t "common.email"}} @wrapperClass="mb-0i">
-                        <Input @value={{@resource.user.email}} @type="text" class="w-full form-input" placeholder={{t "common.email"}} disabled={{true}} />
+                    <InputGroup @name="Email" @wrapperClass="mb-0i">
+                        <Input @value={{@resource.user.email}} @type="text" class="w-full form-input" placeholder="Email" disabled={{true}} />
                     </InputGroup>
-                    <InputGroup @name={{t "common.phone"}} @wrapperClass="mb-0i">
+                    <InputGroup @name="Téléphone" @wrapperClass="mb-0i">
                         <PhoneInput @value={{@resource.user.phone}} @onInput={{fn (mut @resource.phone)}} class="form-input w-full" disabled={{true}} />
                     </InputGroup>
                 </div>
@@ -48,7 +48,7 @@
         </div>
     </ContentPanel>
 
-    <ContentPanel @title={{t "driver.fields.driver-details"}} @open={{true}} @wrapperClass="bordered-top">
+    <ContentPanel @title="Détails du conducteur" @open={{true}} @wrapperClass="bordered-top">
         <div class="flex flex-row space-x-3 mb-3">
             <div class="flex items-center justify-start rounded-full">
                 <Image
@@ -60,40 +60,40 @@
                     class="h-14 w-14 rounded-full shadow-sm"
                 />
                 <Attach::Tooltip @class="clean" @animation="scale" @placement="top">
-                    <InputInfo @text={{t "common.upload-new-photo"}} />
+                    <InputInfo @text="Télécharger une nouvelle photo" />
                 </Attach::Tooltip>
             </div>
             <div>
                 <UploadButton
-                    @name={{t "common.photos"}}
+                    @name="Photos"
                     @accept="image/*"
                     @onFileAdded={{perform this.handlePhotoUpload}}
                     @icon="upload"
                     @size="xs"
-                    @buttonText={{t "common.upload-image"}}
+                    @buttonText="Télécharger une image"
                     @disabled={{cannot-write @resource}}
                 />
                 <div class="px-1">
-                    <span class="text-gray-300 dark:text-gray-600 text-xs">{{t "common.upload-image-supported"}}</span>
+                    <span class="text-gray-300 dark:text-gray-600 text-xs">JPG, PNG, GIF supportés</span>
                 </div>
             </div>
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-2 text-xs no-input-group-padding">
-            {{!-- <InputGroup @name={{t "common.internal-id"}}>
-                <Input @value={{@resource.internal_id}} @type="text" class="w-full form-input" placeholder={{t "common.internal-id"}} disabled={{cannot-write @resource}} />
+            {{!-- <InputGroup @name="ID interne">
+                <Input @value={{@resource.internal_id}} @type="text" class="w-full form-input" placeholder="ID interne" disabled={{cannot-write @resource}} />
             </InputGroup> --}}
 
-            <InputGroup @name={{t "driver.fields.driver-license"}}>
+            <InputGroup @name="Numéro de permis">
                 <Input
                     @value={{@resource.drivers_license_number}}
                     @type="text"
                     class="w-full form-input"
-                    placeholder={{t "driver.fields.driver-license"}}
+                    placeholder="Numéro de permis"
                     disabled={{cannot-write @resource}}
                 />
             </InputGroup>
 
-             <InputGroup @name="Date d'expiration du permis">
+            <InputGroup @name="Date d'expiration du permis">
                 <DatePicker
                     @value={{or (format-date-fns @resource.drivers_license_expiry "dd-MM-yyyy") null}}
                     @onChange={{fn (mut @resource.drivers_license_expiry)}}
@@ -102,11 +102,11 @@
                 />
             </InputGroup>
 
-            {{!-- <InputGroup @name={{t "driver.fields.vendor"}}>
+            {{!-- <InputGroup @name="Fournisseur">
                 <ModelSelect
                     @modelName="vendor"
                     @selectedModel={{@resource.vendor}}
-                    @placeholder={{t "driver.fields.select-vendor"}}
+                    @placeholder="Sélectionner un fournisseur"
                     @triggerClass="form-select form-input"
                     @infiniteScroll={{false}}
                     @renderInPlace={{true}}
@@ -118,11 +118,11 @@
                 </ModelSelect>
             </InputGroup> --}}
 
-            <InputGroup @name={{t "resource.vehicle"}}>
+            <InputGroup @name="Véhicule">
                 <ModelSelect
                     @modelName="vehicle"
                     @selectedModel={{@resource.vehicle}}
-                    @placeholder={{t "driver.fields.select-vehicle"}}
+                    @placeholder="Sélectionner un véhicule"
                     @triggerClass="form-select form-input"
                     @infiniteScroll={{false}}
                     @renderInPlace={{true}}
@@ -135,11 +135,11 @@
                 </ModelSelect>
             </InputGroup>
 
-            <InputGroup @name={{t "common.city"}}>
-                <Input @value={{@resource.city}} @type="text" class="w-full form-input" placeholder={{t "common.city"}} disabled={{cannot-write @resource}} />
+            <InputGroup @name="Ville">
+                <Input @value={{@resource.city}} @type="text" class="w-full form-input" placeholder="Ville" disabled={{cannot-write @resource}} />
             </InputGroup>
 
-            <InputGroup @name={{t "common.country"}}>
+            <InputGroup @name="Pays">
                 <CountrySelect
                     class="w-full form-input form-select form-datalist"
                     @value={{@resource.country}}
@@ -148,13 +148,13 @@
                 />
             </InputGroup>
 
-            <InputGroup @name={{t "common.status"}}>
+            <InputGroup @name="Statut">
                 <div class="fleetbase-model-select fleetbase-power-select ember-model-select">
                     <PowerSelect
                         @options={{get-fleet-ops-options "driverStatuses"}}
                         @selected={{find-by "value" @resource.status (get-fleet-ops-options "driverStatuses")}}
                         @onChange={{set-model-attr @resource "status"}}
-                        @placeholder={{t "common.select-field" field=(t "common.status")}}
+                        @placeholder="Sélectionner un statut"
                         @triggerClass="form-select form-input"
                         @disabled={{cannot-write @resource}}
                         as |type|
@@ -166,13 +166,13 @@
                     </PowerSelect>
                 </div>
             </InputGroup>
-            {{!-- <InputGroup @name={{t "common.coordinates"}} @wrapperClass="col-span-2">
+            {{!-- <InputGroup @name="Coordonnées" @wrapperClass="col-span-2">
                 <ModelCoordinatesInput @model={{@resource}} @disabled={{cannot-write @resource}} @autocomplete="location" />
             </InputGroup> --}}
         </div>
-        <RegistryYield @registry="fleet-ops:component:driver:form:details" as |RegistryComponent|>
+        {{!-- <RegistryYield @registry="fleet-ops:component:driver:form:details" as |RegistryComponent|>
             <RegistryComponent @resource={{@resource}} @controller={{this.controller}} @permission={{get-write-permission @resource}} />
-        </RegistryYield>
+        </RegistryYield> --}}
     </ContentPanel>
 
     {{!-- <CustomField::Yield @subject={{@resource}} @wrapperClass="bordered-top" />
@@ -181,11 +181,11 @@
         <RegistryComponent @resource={{@resource}} @controller={{this.controller}} @permission={{get-write-permission @resource}} />
     </RegistryYield>
 
-    <ContentPanel @title={{t "avatar-picker.avatar"}} @open={{true}} @wrapperClass="bordered-top">
+    <ContentPanel @title="Avatar" @open={{true}} @wrapperClass="bordered-top">
         <AvatarPicker @model={{@resource}} @defaultAvatar={{config "defaultValues.driverAvatar"}} />
     </ContentPanel>
 
-    <ContentPanel @title={{"formations supplémentaires"}} @open={{true}} @wrapperClass="bordered-top">
+    <ContentPanel @title="Formations supplémentaires" @open={{true}} @wrapperClass="bordered-top">
         <MetadataEditor @value={{@resource.meta}} @onChange={{fn (mut @resource.meta)}} />
     </ContentPanel> --}}
 </div>
