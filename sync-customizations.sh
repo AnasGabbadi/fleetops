@@ -6,26 +6,22 @@ composer install --no-dev --prefer-dist
 
 echo "🔄 Synchronisation des customisations KounHany..."
 
-# Route management/index (redirection vers véhicules)
+# Frontend Components & Routes
 cp /fleetbase/packages/fleetops/addon/routes/management/index.js \
 /fleetbase/console/node_modules/@fleetbase/fleetops-engine/addon/routes/management/index.js
 
-# Formulaire véhicule
 cp /fleetbase/packages/fleetops/addon/components/vehicle/form.hbs \
 /fleetbase/console/node_modules/@fleetbase/fleetops-engine/addon/components/vehicle/form.hbs
 
 cp /fleetbase/packages/fleetops/addon/components/vehicle/form.js \
 /fleetbase/console/node_modules/@fleetbase/fleetops-engine/addon/components/vehicle/form.js
 
-# Controller new vehicle (validation)
 cp /fleetbase/packages/fleetops/addon/controllers/management/vehicles/index/new.js \
 /fleetbase/console/node_modules/@fleetbase/fleetops-engine/addon/controllers/management/vehicles/index/new.js
 
-# Formulaire conducteur
 cp /fleetbase/packages/fleetops/addon/components/driver/form.hbs \
 /fleetbase/console/node_modules/@fleetbase/fleetops-engine/addon/components/driver/form.hbs
 
-# Traductions
 cp /fleetbase/packages/fleetops/translations/fr-fr.yaml \
 /fleetbase/console/node_modules/@fleetbase/fleetops-engine/translations/fr-fr.yaml
 
@@ -44,23 +40,22 @@ cp /fleetbase/packages/fleetops/addon/controllers/management/vehicles/index.js \
 cp /fleetbase/packages/fleetops/addon/components/layout/fleet-ops-sidebar.js \
 /fleetbase/console/node_modules/@fleetbase/fleetops-engine/addon/components/layout/fleet-ops-sidebar.js
 
-# ✅ FIX: Vehicle appends circular relation + customize form
-echo "🔧 Appliquant le fix Vehicle appends et customisations formulaire..."
+# Backend Models & Resources (packages → vendor)
+echo "🔧 Appliquant les customisations Vehicle..."
 cp /fleetbase/packages/fleetops/server/src/Models/Vehicle.php \
 /fleetbase/api/vendor/fleetbase/fleetops-api/server/src/Models/Vehicle.php
 
-# Contrôleur Vehicle API v1 (backend Laravel)
+cp /fleetbase/packages/fleetops/server/src/Http/Resources/v1/VehicleWithoutDriver.php \
+/fleetbase/api/vendor/fleetbase/fleetops-api/server/src/Http/Resources/v1/VehicleWithoutDriver.php
+
 cp /fleetbase/packages/fleetops/server/src/Http/Controllers/Api/v1/VehicleController.php \
 /fleetbase/api/vendor/fleetbase/fleetops-api/server/src/Http/Controllers/Api/v1/VehicleController.php
 
-# Modèle Vehicle data
+# Frontend Models (packages → node_modules)
 cp /fleetbase/packages/fleetops-data/addon/models/vehicle.js \
 /fleetbase/console/node_modules/@fleetbase/fleetops-data/addon/models/vehicle.js
 
-cp /fleetbase/api/vendor/fleetbase/fleetops-api/server/src/Http/Resources/v1/VehicleWithoutDriver.php \
-/fleetbase/packages/fleetops/server/src/Http/Resources/v1/VehicleWithoutDriver.php
-
-# 🔄 Exécuter les migrations pour les nouveaux champs de financement
+# 🔄 Exécuter les migrations
 echo "🔄 Exécution des migrations..."
 cd /fleetbase/api
 php artisan migrate --force
