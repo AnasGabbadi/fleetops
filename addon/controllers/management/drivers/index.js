@@ -105,48 +105,48 @@ export default class ManagementDriversIndexController extends Controller {
                 filterable: true,
                 filterComponent: 'filter/string',
             },
-            {
-                label: this.intl.t('column.id'),
-                valuePath: 'public_id',
-                cellComponent: 'click-to-copy',
-                resizable: true,
-                sortable: true,
-                filterable: true,
-                hidden: false,
-                filterComponent: 'filter/string',
-            },
-            {
-                label: this.intl.t('column.internal-id'),
-                valuePath: 'internal_id',
-                cellComponent: 'click-to-copy',
-                resizable: true,
-                sortable: true,
-                filterable: true,
-                filterComponent: 'filter/string',
-            },
-            {
-                label: '',
-                cellComponent: 'table/cell/anchor',
-                permission: 'fleet-ops view vendor',
-                onClick: async (driver) => {
-                    try {
-                        const vendor = await driver.loadVendor();
-                        if (vendor) this.vendorActions.panel.view(vendor);
-                    } catch (err) {
-                        this.notifications.serverError(err);
-                    }
-                },
-                valuePath: 'vendor.name',
-                modelNamePath: 'name',
-                hidden: true,
-                hideable: false,
-                resizable: true,
-                filterable: false,
-                filterComponent: 'filter/model',
-                filterComponentPlaceholder: 'Select vendor to filter by',
-                filterParam: 'vendor',
-                model: 'vendor',
-            },
+            // {
+            //     label: this.intl.t('column.id'),
+            //     valuePath: 'public_id',
+            //     cellComponent: 'click-to-copy',
+            //     resizable: true,
+            //     sortable: true,
+            //     filterable: true,
+            //     hidden: false,
+            //     filterComponent: 'filter/string',
+            // },
+            // {
+            //     label: this.intl.t('column.internal-id'),
+            //     valuePath: 'internal_id',
+            //     cellComponent: 'click-to-copy',
+            //     resizable: true,
+            //     sortable: true,
+            //     filterable: true,
+            //     filterComponent: 'filter/string',
+            // },
+            // {
+            //     label: '',
+            //     cellComponent: 'table/cell/anchor',
+            //     permission: 'fleet-ops view vendor',
+            //     onClick: async (driver) => {
+            //         try {
+            //             const vendor = await driver.loadVendor();
+            //             if (vendor) this.vendorActions.panel.view(vendor);
+            //         } catch (err) {
+            //             this.notifications.serverError(err);
+            //         }
+            //     },
+            //     valuePath: 'vendor.name',
+            //     modelNamePath: 'name',
+            //     hidden: true,
+            //     hideable: false,
+            //     resizable: true,
+            //     filterable: false,
+            //     filterComponent: 'filter/model',
+            //     filterComponentPlaceholder: 'Select vendor to filter by',
+            //     filterParam: 'vendor',
+            //     model: 'vendor',
+            // },
             {
                 label: this.intl.t('column.vehicle'),
                 cellComponent: 'table/cell/anchor',
@@ -190,6 +190,16 @@ export default class ManagementDriversIndexController extends Controller {
                 sortable: true,
                 filterable: true,
                 filterComponent: 'filter/string',
+            },
+            {
+                label: 'Date d\'expiration du permis',
+                valuePath: 'drivers_license_expiryFormatted',
+                sortParam: 'drivers_license_expiry',
+                filterParam: 'drivers_license_expiry',
+                resizable: true,
+                sortable: true,
+                filterable: true,
+                filterComponent: 'filter/date',
             },
             {
                 label: this.intl.t('column.phone'),

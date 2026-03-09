@@ -42,7 +42,11 @@ class DriverController extends Controller
     public function create(CreateDriverRequest $request)
     {
         // get request input
-        $input = $request->except(['name', 'password', 'email', 'phone', 'location', 'altitude', 'heading', 'speed', 'meta']);
+        $input = $request->only([
+            'status', 'vehicle_uuid', 'vendor_uuid', 'current_job_uuid', 'country', 'city',
+            'drivers_license_number', 'drivers_license_expiry',
+            'online', 'slug'
+        ]);
 
         // Add default status
         $input['status'] = 'active';
@@ -163,8 +167,12 @@ class DriverController extends Controller
         }
 
         // get request input
-        $input = $request->except(['name', 'password', 'email', 'phone', 'location', 'altitude', 'heading', 'speed', 'meta']);
-
+        $input = $request->only([
+            'status', 'vehicle_uuid', 'vendor_uuid', 'current_job_uuid', 'country', 'city',
+            'drivers_license_number', 'drivers_license_expiry',  // ← AJOUTE
+            'online', 'slug'
+        ]);
+        
         // get user details for driver
         $userDetails = $request->only(['name', 'password', 'email', 'phone']);
 

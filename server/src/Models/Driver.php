@@ -92,6 +92,7 @@ class Driver extends Model
         'signup_token_used',
         'avatar_url',
         'drivers_license_number',
+        'drivers_license_expiry',
         'location',
         'heading',
         'bearing',
@@ -104,7 +105,7 @@ class Driver extends Model
         'current_status',
         'slug',
         'status',
-        'meta,',
+        'meta',
     ];
 
     /**
@@ -130,6 +131,7 @@ class Driver extends Model
         'location'   => Point::class,
         'online'     => 'boolean',
         'meta'       => Json::class,
+        'drivers_license_expiry' => 'date',
     ];
 
     /**
