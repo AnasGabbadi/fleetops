@@ -25,6 +25,7 @@ class Vehicle extends FleetbaseResource
             'internal_id'            => $this->internal_id,
             'company_uuid'           => $this->when(Http::isInternalRequest(), $this->company_uuid),
             'vendor_uuid'            => $this->when(Http::isInternalRequest(), $this->vendor_uuid),
+            'fleet_uuid'             => $this->when(Http::isInternalRequest(), $this->fleet_uuid),
             'category_uuid'          => $this->when(Http::isInternalRequest(), $this->category_uuid),
             'warranty_uuid'          => $this->when(Http::isInternalRequest(), $this->warranty_uuid),
             'telematic_uuid'         => $this->when(Http::isInternalRequest(), $this->telematic_uuid),
@@ -175,6 +176,7 @@ class Vehicle extends FleetbaseResource
             'avatar_url'                 => $this->avatar_url,
             // Relationships
             'driver'                     => $this->whenLoaded('driver', fn () => new Driver($this->driver)),
+            'fleet'                      => data_get($this, 'fleet.public_id'),
             // Status / assignment
             'status'                     => $this->status,
             'online'                     => (bool) $this->online,

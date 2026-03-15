@@ -24,7 +24,7 @@ class FuelReportController extends Controller
     {
         // get request input
         $input = $request->only([
-            'location',
+            'reporter_uuid',
             'odometer',
             'volume',
             'metric_unit',
@@ -48,7 +48,7 @@ class FuelReportController extends Controller
         // get the user uuid
         $input['company_uuid']      = $driver->company_uuid;
         $input['driver_uuid']       = $driver->uuid;
-        $input['reported_by_uuid']  = $driver->user_uuid;
+        if ($request->has('reporter_uuid')) { $input['reported_by_uuid'] = $request->input('reporter_uuid'); }
         $input['vehicle_uuid']      = $driver->vehicle_uuid;
 
         // create the fuel report
@@ -81,6 +81,7 @@ class FuelReportController extends Controller
         }
 
         $input = $request->only([
+            'reporter_uuid',
             'odometer',
             'volume',
             'metric_unit',

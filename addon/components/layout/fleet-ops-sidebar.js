@@ -184,11 +184,12 @@ export default class LayoutFleetOpsSidebarComponent extends Component {
 
         const servicesItems = [
             {
-                title: 'Maintenance',
-                icon: 'clipboard-list',
-                route: 'maintenance.work-orders',
-                permission: 'fleet-ops list work-order',
-                visible: this.abilities.can('fleet-ops see work-order'),
+                intl: 'menu.maintenances',
+                title: this.intl.t('menu.maintenances'),
+                icon: 'wrench',
+                route: 'management.maintenances',
+                permission: 'fleet-ops list maintenance-request',
+                visible: this.abilities.can('fleet-ops see maintenance-request'),
             },
             {
                 title: 'Dépannage',

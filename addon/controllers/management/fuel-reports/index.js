@@ -68,18 +68,18 @@ export default class ManagementFuelReportsIndexController extends Controller {
     /** columns */
     get columns() {
         return [
-            {
-                sticky: true,
-                label: this.intl.t('column.id'),
-                valuePath: 'public_id',
-                cellComponent: 'table/cell/anchor',
-                action: this.fuelReportActions.transition.view,
-                resizable: true,
-                sortable: true,
-                filterable: true,
-                hidden: false,
-                filterComponent: 'filter/string',
-            },
+            // {
+            //     sticky: true,
+            //     label: this.intl.t('column.id'),
+            //     valuePath: 'public_id',
+            //     cellComponent: 'table/cell/anchor',
+            //     action: this.fuelReportActions.transition.view,
+            //     resizable: true,
+            //     sortable: true,
+            //     filterable: true,
+            //     hidden: false,
+            //     filterComponent: 'filter/string',
+            // },
             {
                 label: this.intl.t('column.reporter'),
                 valuePath: 'reporter_name',

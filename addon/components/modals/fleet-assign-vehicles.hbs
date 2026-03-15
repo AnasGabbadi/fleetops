@@ -1,0 +1,137 @@
+<Modal::Default @modalIsOpened={{@modalIsOpened}} @options={{@options}} @confirm={{perform this.saveAllVehicles}}
+    @decline={{@onDecline}}>
+    <div class="modal-body-container">
+        <div class="grid grid-cols-1 gap-2 text-xs dark:text-gray-100">
+
+            {{! FILTRES }}
+            <div class="bg-gray-100 dark:bg-gray-700 p-3 rounded space-y-3">
+                <h3 class="font-semibold text-sm mb-2">🔍 Filtrer les véhicules</h3>
+
+                {{! LIGNE 1: VIN + Immatriculation }}
+                <div class="grid grid-cols-2 gap-2">
+                    <InputGroup @name="VIN">
+                        <Input @value={{this.filterVin}} @type="text" class="w-full form-input"
+                            placeholder="Chercher par VIN..." />
+                    </InputGroup>
+
+                    <InputGroup @name="Immatriculation">
+                        <Input @value={{this.filterPlate}} @type="text" class="w-full form-input"
+                            placeholder="Chercher par plaque..." />
+                    </InputGroup>
+                </div>
+
+                {{! LIGNE 2: Marque + Modèle + Version }}
+                <div class="grid grid-cols-3 gap-2">
+                    <InputGroup @name="Marque">
+                        <Input @value={{this.filterMake}} @type="text" class="w-full form-input"
+                            placeholder="Ex: Peugeot..." />
+                    </InputGroup>
+
+                    <InputGroup @name="Modèle">
+                        <Input @value={{this.filterModel}} @type="text" class="w-full form-input"
+                            placeholder="Ex: 308..." />
+                    </InputGroup>
+
+                    <InputGroup @name="Version">
+                        <Input @value={{this.filterVersion}} @type="text" class="w-full form-input"
+                            placeholder="Ex: GT..." />
+                    </InputGroup>
+                </div>
+            </div>
+
+            {{! VÉHICULES DISPONIBLES }}
+            <div>
+                <h3 class="font-semibold text-sm mb-2">Véhicules disponibles ({{this.filteredAvailableVehicles.length}})
+                </h3>
+                <div class="bg-gray-50 dark:bg-gray-800 rounded p-3 border">
+                    {{#if this.paginatedAvailableVehicles.length}}
+                    <div class="space-y-2 mb-3">
+                        {{#each this.paginatedAvailableVehicles as |vehicle|}}
+                        <div
+                            class="flex items-center justify-between bg-white dark:bg-gray-700 p-3 rounded border hover:border-green-500">
+                            <div class="flex-1 min-w-0">
+                                <div class="font-semibold text-xs text-blue-600">{{vehicle.display_name}}</div>
+                                <div class="text-xs text-gray-600 dark:text-gray-400">
+                                    📋 {{vehicle.plate_number}} | 🔧 {{vehicle.vin}}
+                                </div>
+                            </div>
+                            <button {{on "click" (fn this.addVehicleToSelection vehicle)}}
+                                class="ml-2 px-2 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 transition whitespace-nowrap">
+                                <i class="fas fa-plus mr-1"></i> Ajouter
+                            </button>
+                        </div>
+                        {{/each}}
+                    </div>
+
+                    {{! PAGINATION }}
+                    {{#if (gt this.availableTotalPages 1)}}
+                    <div class="flex justify-center gap-1">
+                        {{#each (range 1 (inc this.availableTotalPages)) as |page|}}
+                        <button {{on "click" (fn this.goToAvailablePage page)}}
+                            class="px-2 py-1 text-xs rounded {{if (eq page this.availablePage) " bg-blue-600
+                            text-white" "bg-gray-300 dark:bg-gray-600" }}">
+                            {{page}}
+                        </button>
+                        {{/each}}
+                    </div>
+                    {{/if}}
+                    {{else}}
+                    {{#if (not this.isLoaded)}}
+                    <div class="text-center py-6">
+                        <p class="text-gray-500">Chargement des véhicules...</p>
+                    </div>
+                    {{else}}
+                    <div class="text-center py-4 text-gray-500 text-xs">
+                        Aucun véhicule disponible
+                    </div>
+                    {{/if}}
+                    {{/if}}
+                </div>
+            </div>
+
+            {{! VÉHICULES SÉLECTIONNÉS }}
+            <div>
+                <h3 class="font-semibold text-sm mb-2">Véhicules sélectionnés ({{this.selectedVehicles.length}})</h3>
+                <div class="bg-blue-50 dark:bg-blue-900/20 rounded p-3 border border-blue-200 dark:border-blue-700">
+                    {{#if this.paginatedSelectedVehicles.length}}
+                    <div class="space-y-2 mb-3">
+                        {{#each this.paginatedSelectedVehicles as |vehicle|}}
+                        <div
+                            class="flex items-center justify-between bg-white dark:bg-gray-700 p-3 rounded border border-blue-300">
+                            <div class="flex-1 min-w-0">
+                                <div class="font-semibold text-xs text-blue-600">{{vehicle.display_name}}</div>
+                                <div class="text-xs text-gray-600 dark:text-gray-400">
+                                    📋 {{vehicle.plate_number}} | 🔧 {{vehicle.vin}}
+                                </div>
+                            </div>
+                            <button {{on "click" (fn this.removeVehicleFromSelection vehicle)}}
+                                class="ml-2 px-2 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 transition whitespace-nowrap">
+                                <i class="fas fa-trash mr-1"></i> Retirer
+                            </button>
+                        </div>
+                        {{/each}}
+                    </div>
+
+                    {{! PAGINATION }}
+                    {{#if (gt this.selectedTotalPages 1)}}
+                    <div class="flex justify-center gap-1">
+                        {{#each (range 1 (inc this.selectedTotalPages)) as |page|}}
+                        <button {{on "click" (fn this.goToSelectedPage page)}}
+                            class="px-2 py-1 text-xs rounded {{if (eq page this.selectedPage) " bg-blue-600
+                            text-white" "bg-gray-300 dark:bg-gray-600" }}">
+                            {{page}}
+                        </button>
+                        {{/each}}
+                    </div>
+                    {{/if}}
+                    {{else}}
+                    <div class="text-center py-4 text-gray-500 text-xs">
+                        Aucun véhicule sélectionné
+                    </div>
+                    {{/if}}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</Modal::Default>

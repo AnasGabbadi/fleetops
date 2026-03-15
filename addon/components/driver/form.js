@@ -10,6 +10,27 @@ export default class DriverFormComponent extends Component {
     @service modalsManager;
     @service('universe/extension-manager') extensionManager;
 
+    constructor() {
+        super(...arguments);
+        this.loadRelations.perform();
+    }
+
+    @task *loadRelations() {
+        const driver = this.args.resource;
+        try {
+            // Charger la flotte
+            if (driver && !driver.fleet) {
+                yield driver.belongsTo('fleet').reload();
+            }
+            // Charger le véhicule
+            if (driver && !driver.vehicle) {
+                yield driver.belongsTo('vehicle').reload();
+            }
+        } catch (err) {
+            console.warn('Error loading relations:', err);
+        }
+    }
+
     get userAccountActionButtons() {
         return [
             {

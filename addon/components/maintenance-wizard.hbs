@@ -1,0 +1,54 @@
+<div class="w-full h-full flex-1 flex flex-col min-w-0">
+  <!-- Steps Header -->
+  <div class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm p-6 flex-shrink-0">
+    <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8">📋 Demande de Maintenance Véhicule
+    </h2>
+
+    <div class="flex items-center justify-between gap-4">
+      {{#each (array 1 2 3 4) as |step|}}
+      <button class="flex flex-col items-center flex-shrink-0 {{if (lt step 4) 'flex-1'}}" {{on "click" (fn
+        this.goToStep step)}}>
+        <div
+          class="w-12 h-12 md:w-14 md:h-14 rounded-full border-2 flex items-center justify-center font-bold text-sm md:text-base transition-all {{if (eq this.currentStep step) 'bg-sky-500 border-sky-500 text-white shadow-lg' (if (gt step this.currentStep) 'bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-400' 'bg-green-500 border-green-500 text-white')}}">
+          {{if (gt step this.currentStep) step '✓'}}
+        </div>
+        <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 mt-2 text-center whitespace-nowrap">
+          {{#if (eq step 1)}}Véhicule{{/if}}
+          {{#if (eq step 2)}}Produits{{/if}}
+          {{#if (eq step 3)}}Garage{{/if}}
+          {{#if (eq step 4)}}Confirm{{/if}}
+        </span>
+      </button>
+      {{#if (lt step 4)}}
+      <div
+        class="flex-1 h-1 {{if (gt step this.currentStep) 'bg-gray-200 dark:bg-gray-700' 'bg-green-500'}} transition-colors">
+      </div>
+      {{/if}}
+      {{/each}}
+    </div>
+  </div>
+
+  <!-- Content - Takes remaining space -->
+  <div
+    class="flex-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden min-w-0">
+    {{#if (eq this.currentStep 1)}}
+    <MaintenanceWizard::Step1 @onNext={{this.handleNextStep}} @onCancel={{this.handleCancel}}
+      @onUpdateData={{this.updateWizardData}} />
+
+    {{else if (eq this.currentStep 2)}}
+    <MaintenanceWizard::Step2 @onNext={{this.handleNextStep}} @onPrevious={{this.handlePreviousStep}}
+      @onCancel={{this.handleCancel}} @onUpdateData={{this.updateWizardData}} @vehicle={{this.wizardData.vehicle}}
+      @maintenanceType={{this.wizardData.maintenanceType}} @city={{this.wizardData.city}} />
+
+    {{else if (eq this.currentStep 3)}}
+    <MaintenanceWizard::Step3 @onNext={{this.handleNextStep}} @onPrevious={{this.handlePreviousStep}}
+      @onCancel={{this.handleCancel}} @onUpdateData={{this.updateWizardData}} @vehicle={{this.wizardData.vehicle}}
+      @maintenanceType={{this.wizardData.maintenanceType}} @city={{this.wizardData.city}}
+      @cartItems={{this.wizardData.cartItems}} />
+
+    {{else if (eq this.currentStep 4)}}
+    <MaintenanceWizard::Step4 @onConfirm={{this.handleConfirm}} @onPrevious={{this.handlePreviousStep}}
+      @onCancel={{this.handleCancel}} @wizardData={{this.wizardData}} />
+    {{/if}}
+  </div>
+</div>

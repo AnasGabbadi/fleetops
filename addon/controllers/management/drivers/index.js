@@ -284,21 +284,21 @@ export default class ManagementDriversIndexController extends Controller {
                     {
                         separator: true,
                     },
-                    {
-                        label: this.intl.t('driver.actions.assign-order'),
-                        fn: this.driverActions.assignOrder,
-                        permission: 'fleet-ops assign-order-for driver',
-                    },
+                    // {
+                    //     label: this.intl.t('driver.actions.assign-order'),
+                    //     fn: this.driverActions.assignOrder,
+                    //     permission: 'fleet-ops assign-order-for driver',
+                    // },
                     {
                         label: this.intl.t('driver.actions.assign-vehicle'),
                         fn: this.driverActions.assignVehicle,
                         permission: 'fleet-ops assign-vehicle-for driver',
                     },
-                    {
-                        label: this.intl.t('driver.actions.locate-driver'),
-                        fn: this.driverActions.locate,
-                        permission: 'fleet-ops view driver',
-                    },
+                    // {
+                    //     label: this.intl.t('driver.actions.locate-driver'),
+                    //     fn: this.driverActions.locate,
+                    //     permission: 'fleet-ops view driver',
+                    // },
                     {
                         separator: true,
                     },

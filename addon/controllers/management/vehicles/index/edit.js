@@ -18,6 +18,27 @@ export default class ManagementVehiclesIndexEditController extends Controller {
         },
     ];
 
+    @action setupComponent() {
+        // Charger les relations manquantes
+        this.loadRelations.perform(this.model);
+    }
+
+    @task *loadRelations(vehicle) {
+        try {
+            // Charger la flotte
+            if (vehicle && !vehicle.fleet) {
+                yield vehicle.belongsTo('fleet').reload();
+            }
+            // Charger le conducteur
+            if (vehicle && !vehicle.driver) {
+                yield vehicle.belongsTo('driver').reload();
+            }
+        } catch (err) {
+            // Silencieusement échouer si les relations n'existent pas
+            console.warn('Error loading relations:', err);
+        }
+    }
+
     @task *save(vehicle) {
         try {
             yield vehicle.save();

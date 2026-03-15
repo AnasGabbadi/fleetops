@@ -7,28 +7,18 @@ use Fleetbase\FleetOps\Http\Requests\UpdateFleetRequest;
 use Fleetbase\FleetOps\Http\Resources\v1\DeletedResource;
 use Fleetbase\FleetOps\Http\Resources\v1\Fleet as FleetResource;
 use Fleetbase\FleetOps\Models\Fleet;
+use Fleetbase\FleetOps\Models\Vehicle;
 use Fleetbase\FleetOps\Support\Utils;
 use Fleetbase\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class FleetController extends Controller
 {
-    /**
-     * Creates a new Fleetbase Fleet resource.
-     *
-     * @param \Fleetbase\Http\Requests\CreateFleetRequest $request
-     *
-     * @return \Fleetbase\Http\Resources\Fleet
-     */
     public function create(CreateFleetRequest $request)
     {
-        // get request input
-        $input = $request->only(['name']);
-
-        // make sure company is set
+        $input = $request->only(['name', 'fleet_level', 'country', 'city']);
         $input['company_uuid'] = session('company');
 
-        // service area assignment
         if ($request->has('service_area')) {
             $input['service_area_uuid'] = Utils::getUuid('service_areas', [
                 'public_id'    => $request->input('service_area'),
@@ -36,111 +26,67 @@ class FleetController extends Controller
             ]);
         }
 
-        // create the fleet
         $fleet = Fleet::create($input);
-
-        // response the driver resource
         return new FleetResource($fleet);
     }
 
-    /**
-     * Updates a Fleetbase Fleet resource.
-     *
-     * @param string                                      $id
-     * @param \Fleetbase\Http\Requests\UpdateFleetRequest $request
-     *
-     * @return \Fleetbase\Http\Resources\Fleet
-     */
     public function update($id, UpdateFleetRequest $request)
     {
-        // find for the fleet
         try {
             $fleet = Fleet::findRecordOrFail($id);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
-            return response()->json(
-                [
-                    'error' => 'Fleet resource not found.',
-                ],
-                404
-            );
+            return response()->json(['error' => 'Fleet resource not found.'], 404);
         }
 
-        // get request input
-        $input = $request->only(['name']);
+        $input = $request->only(['name', 'fleet_level', 'country', 'city']);
 
-        // service area assignment
-        if ($request->has('service_area')) {
-            $input['service_area_uuid'] = Utils::getUuid('service_areas', [
-                'public_id'    => $request->input('service_area'),
-                'company_uuid' => session('company'),
-            ]);
+        // ✅ CHERCHER vehicles_ids dans fleet.vehicles_ids
+        if ($request->has('fleet.vehicles_ids') || $request->has('vehicles_ids')) {
+        $vehicleIds = $request->input('fleet.vehicles_ids') ?? $request->input('vehicles_ids');
+        
+        if (is_array($vehicleIds) && count($vehicleIds) > 0) {
+            // Détacher tous d'abord
+            $fleet->vehicles()->detach();
+            // Attacher les nouveaux
+            foreach ($vehicleIds as $vehicleId) {
+                $vehicle = Vehicle::where('uuid', $vehicleId)->first();
+                if ($vehicle) {
+                    $vehicle->update(['fleet_uuid' => $fleet->uuid]);
+                }
+            }
         }
+    }
 
-        // update the fleet
         $fleet->update($input);
+        $fleet->refresh();
 
-        // response the fleet resource
         return new FleetResource($fleet);
     }
 
-    /**
-     * Query for Fleetbase Fleet resources.
-     *
-     * @return \Fleetbase\Http\Resources\FleetCollection
-     */
     public function query(Request $request)
     {
         $results = Fleet::queryWithRequest($request);
-
         return FleetResource::collection($results);
     }
 
-    /**
-     * Finds a single Fleetbase Fleet resources.
-     *
-     * @return \Fleetbase\Http\Resources\FleetCollection
-     */
     public function find($id, Request $request)
     {
-        // find for the fleet
         try {
             $fleet = Fleet::findRecordOrFail($id);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
-            return response()->json(
-                [
-                    'error' => 'Fleet resource not found.',
-                ],
-                404
-            );
+            return response()->json(['error' => 'Fleet resource not found.'], 404);
         }
-
-        // response the fleet resource
         return new FleetResource($fleet);
     }
 
-    /**
-     * Deletes a Fleetbase Fleet resources.
-     *
-     * @return \Fleetbase\Http\Resources\FleetCollection
-     */
     public function delete($id, Request $request)
     {
-        // find for the driver
         try {
             $fleet = Fleet::findRecordOrFail($id);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
-            return response()->json(
-                [
-                    'error' => 'Fleet resource not found.',
-                ],
-                404
-            );
+            return response()->json(['error' => 'Fleet resource not found.'], 404);
         }
-
-        // delete the fleet
         $fleet->delete();
-
-        // response the fleet resource
         return new DeletedResource($fleet);
     }
 }

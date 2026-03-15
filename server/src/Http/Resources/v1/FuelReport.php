@@ -37,7 +37,7 @@ class FuelReport extends FleetbaseResource
             'metric_unit'       => $this->metric_unit,
             'type'              => $this->type,
             'status'            => $this->status,
-            'location'          => $this->location ?? new Point(0, 0),
+            'location'          => null,
             'updated_at'        => $this->updated_at,
             'created_at'        => $this->created_at,
         ]);

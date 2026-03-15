@@ -106,6 +106,7 @@ class Driver extends Model
         'slug',
         'status',
         'meta',
+        'fleet_uuid',
     ];
 
     /**
@@ -836,5 +837,10 @@ class Driver extends Model
                 $query->where('public_id', $identifier)->orWhere('drivers_license_number', $identifier);
             });
         })->first();
+    }
+
+    public function fleet()
+    {
+        return $this->belongsTo(Fleet::class, 'fleet_uuid', 'uuid');
     }
 }

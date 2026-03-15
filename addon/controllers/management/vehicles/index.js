@@ -366,11 +366,11 @@ export default class ManagementVehiclesIndexController extends Controller {
                         fn: this.vehicleActions.transition.edit,
                         permission: 'fleet-ops update vehicle',
                     },
-                    {
-                        label: 'Localiser le véhicule',
-                        fn: this.vehicleActions.locate,
-                        permission: 'fleet-ops view vehicle',
-                    },
+                    // {
+                    //     label: 'Localiser le véhicule',
+                    //     fn: this.vehicleActions.locate,
+                    //     permission: 'fleet-ops view vehicle',
+                    // },
                     {
                         separator: true,
                     },

@@ -125,6 +125,13 @@ export default buildRoutes(function () {
                 this.route('edit', { path: '/edit/:public_id' });
             });
         });
+        this.route('maintenances', function () {
+            this.route('index', { path: '/' });
+            this.route('new');
+            this.route('view', { path: '/:id' }, function () {
+                this.route('index', { path: '/' });
+            });
+        });
         this.route('issues', function () {
             this.route('index', { path: '/' }, function () {
                 this.route('new');

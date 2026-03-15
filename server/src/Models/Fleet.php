@@ -88,6 +88,10 @@ class Fleet extends Model
         'task',
         'status',
         'slug',
+        'fleet_level',     // NOUVEAU
+        'country',         // NOUVEAU
+        'city',           // NOUVEAU
+        'draft',
     ];
 
     /**
@@ -165,7 +169,7 @@ class Fleet extends Model
      */
     public function vehicles()
     {
-        return $this->hasManyThrough(Vehicle::class, FleetVehicle::class, 'fleet_uuid', 'uuid', 'uuid', 'vehicle_uuid');
+        return $this->hasMany(Vehicle::class, 'fleet_uuid', 'uuid');
     }
 
     /**

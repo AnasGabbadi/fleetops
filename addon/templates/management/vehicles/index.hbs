@@ -1,9 +1,9 @@
 {{#if (eq this.layout "table")}}
     <Layout::Resource::Tabular
-        @resource="vehicle"
-        @title={{t "resource.vehicles"}}
+        @resource="maintenance"
+        @title={{t "maintenance.resources.maintenances"}}
         @searchQuery={{this.query}}
-        @onSearch={{perform this.vehicleActions.controllerSearchTask this}}
+        @onSearch={{perform this.maintenanceActions.controllerSearchTask this}}
         @data={{@model}}
         @columns={{this.columns}}
         @page={{this.page}}
@@ -14,10 +14,10 @@
         @controller={{this}}
     />
 {{else}}
-    <Layout::Section::Header @title={{t "resource.vehicles"}} @actionsWrapperClass="space-x-1">
+    <Layout::Section::Header @title={{t "maintenance.resources.maintenances"}} @actionsWrapperClass="space-x-1">
         <Layout::Resource::TabularActions
             @searchQuery={{this.query}}
-            @onSearch={{perform this.vehicleActions.controllerSearchTask this}}
+            @onSearch={{perform this.maintenanceActions.controllerSearchTask this}}
             @columns={{this.columns}}
             @page={{this.page}}
             @onPageChange={{fn (mut this.page)}}
@@ -25,16 +25,16 @@
             @actionButtons={{this.actionButtons}}
             @bulkActions={{this.bulkActions}}
             @controller={{this}}
-            @hideColumnsPicker={{true}}
+            @hideColumnsPicker={{false}}
         />
     </Layout::Section::Header>
 
     <Layout::Section::Body class="overflow-y-scroll h-full">
         <Layout::Resource::CardsGrid
-            @resource="vehicle"
+            @resource="maintenance"
             @data={{@model}}
             @gap="sm"
-            @columns="4"
+            @columns="3"
             @showPagination={{true}}
             @page={{this.page}}
             @onPageChange={{fn (mut this.page)}}
@@ -43,8 +43,9 @@
             class="h-full"
             as |Item|
         >
-            <Vehicle::Card @resource={{Item.model}} />
+            <Maintenance::Card @resource={{Item.model}} />
         </Layout::Resource::CardsGrid>
     </Layout::Section::Body>
 {{/if}}
+
 {{outlet}}

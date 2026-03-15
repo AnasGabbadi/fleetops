@@ -43,7 +43,7 @@ class DriverController extends Controller
     {
         // get request input
         $input = $request->only([
-            'status', 'vehicle_uuid', 'vendor_uuid', 'current_job_uuid', 'country', 'city',
+            'status', 'vehicle_uuid', 'vendor_uuid', 'fleet_uuid', 'current_job_uuid', 'country', 'city',
             'drivers_license_number', 'drivers_license_expiry',
             'online', 'slug'
         ]);
@@ -168,8 +168,8 @@ class DriverController extends Controller
 
         // get request input
         $input = $request->only([
-            'status', 'vehicle_uuid', 'vendor_uuid', 'current_job_uuid', 'country', 'city',
-            'drivers_license_number', 'drivers_license_expiry',  // ← AJOUTE
+            'status', 'vehicle_uuid', 'vendor_uuid', 'fleet_uuid', 'current_job_uuid', 'country', 'city',
+            'drivers_license_number', 'drivers_license_expiry',
             'online', 'slug'
         ]);
         

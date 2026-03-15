@@ -118,6 +118,23 @@
                 </ModelSelect>
             </InputGroup> --}}
 
+            {{!-- <InputGroup @name="Flotte">
+                <ModelSelect
+                    @modelName="fleet"
+                    @selectedModel={{@resource.fleet}}
+                    @placeholder="Sélectionner une flotte"
+                    @triggerClass="form-select form-input"
+                    @infiniteScroll={{false}}
+                    @renderInPlace={{true}}
+                    @onChange={{fn (mut @resource.fleet)}}
+                    @onChangeId={{fn (mut @resource.fleet_uuid)}}
+                    @disabled={{cannot-write @resource}}
+                    as |model|
+                >
+                    {{model.name}}
+                </ModelSelect>
+            </InputGroup> --}}
+
             <InputGroup @name="Véhicule">
                 <ModelSelect
                     @modelName="vehicle"

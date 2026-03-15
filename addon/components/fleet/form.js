@@ -1,20 +1,43 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
+import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
-import { underscore } from '@ember/string';
+import { task } from 'ember-concurrency';
 
 export default class FleetFormComponent extends Component {
-    @tracked statusOptions = ['active', 'disabled', 'decommissioned'];
+    @service store;
+    @service notifications;
+
+    @tracked isCreating = false;
 
     get writePermission() {
-        return this.args.resource.isNew ? 'fleet-ops create fleet' : 'fleet-ops update fleet';
+        return 'fleet-ops create fleet';
     }
 
-    @action updateRelationship(relation, value) {
-        this.args.resource.set(relation, value);
+    @task *createFleet() {
+        try {
+            this.isCreating = true;
+            const fleet = this.args.resource;
 
-        if (!value) {
-            this.args.resource.set(underscore(relation) + '_uuid', null);
+            // ✅ Sauvegarder JUSTE les 4 champs
+            yield fleet.save();
+
+            this.notifications.success('Flotte créée avec succès!');
+            this.isCreating = false;
+
+            if (this.args.onSuccess) {
+                this.args.onSuccess(fleet);
+            }
+        } catch (error) {
+            this.notifications.error('Erreur: ' + error.message);
+            this.isCreating = false;
+        }
+}
+
+    @action
+    cancel() {
+        if (this.args.onCancel) {
+            this.args.onCancel();
         }
     }
 }

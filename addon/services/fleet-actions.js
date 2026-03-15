@@ -1,4 +1,5 @@
 import ResourceActionService from '@fleetbase/ember-core/services/resource-action';
+import { action } from '@ember/object';
 
 export default class FleetActionsService extends ResourceActionService {
     constructor() {
@@ -81,4 +82,16 @@ export default class FleetActionsService extends ResourceActionService {
             });
         },
     };
-}
+
+    @action assignVehicles(fleet, options = {}) {
+        this.modalsManager.show('modals/fleet-assign-vehicles', {
+            title: 'Attribuer des véhicules à la flotte',
+            acceptButtonText: 'Confirmer',
+            acceptButtonIcon: 'check',
+            hideDeclineButton: true,
+            fleet,
+            confirm: async () => {},
+            ...options,
+        });
+    }
+}   

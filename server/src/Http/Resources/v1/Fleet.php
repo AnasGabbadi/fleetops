@@ -32,6 +32,12 @@ class Fleet extends FleetbaseResource
             'name'                  => $this->name,
             'task'                  => $this->task ?? null,
             'status'                => $this->status ?? null,
+            // NOUVEAUX CHAMPS
+            'fleet_level'           => $this->fleet_level ?? null,
+            'country'               => $this->country ?? null,
+            'city'                  => $this->city ?? null,
+            'draft' => $this->draft, // NOUVEAU
+            // FIN NOUVEAUX CHAMPS
             'drivers_count'         => $this->when(Http::isInternalRequest(), $this->drivers_count),
             'drivers_online_count'  => $this->when(Http::isInternalRequest(), $this->drivers_online_count),
             'vehicles_count'        => $this->when(Http::isInternalRequest(), $this->vehicles_count),
@@ -60,6 +66,10 @@ class Fleet extends FleetbaseResource
             'name'         => $this->name,
             'task'         => $this->task ?? null,
             'status'       => $this->status ?? null,
+            'fleet_level'  => $this->fleet_level ?? null,
+            'country'      => $this->country ?? null,
+            'city'         => $this->city ?? null,
+            'draft' => $this->draft, // NOUVEAU
             'parent_fleet' => $this->when($this->serviceArea, data_get($this, 'parentFleet.public_id')),
             'service_area' => $this->when($this->serviceArea, data_get($this, 'serviceArea.public_id')),
             'zone'         => $this->when($this->zone, data_get($this, 'zone.public_id')),

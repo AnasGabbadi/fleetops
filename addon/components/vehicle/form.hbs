@@ -99,6 +99,16 @@
                 Affectation & Statut
             </div>
 
+            <InputGroup @name="Flotte">
+                <ModelSelect @modelName="fleet" @selectedModel={{@resource.fleet}}
+                    @placeholder="Sélectionner une flotte" @triggerClass="form-select form-input"
+                    @infiniteScroll={{false}} @renderInPlace={{true}} @onChange={{fn (mut @resource.fleet)}}
+                    @onChangeId={{fn (mut @resource.fleet_uuid)}}
+                    @disabled={{cannot-write @resource}} as |model|>
+                    {{model.name}}
+                </ModelSelect>
+            </InputGroup>
+
             <InputGroup @name="Conducteur assigné">
                 <ModelSelect @modelName="driver" @selectedModel={{@resource.driver}}
                     @placeholder="Sélectionner un conducteur" @triggerClass="form-select form-input"

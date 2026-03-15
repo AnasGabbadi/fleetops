@@ -12,7 +12,7 @@ export default class ManagementFuelReportsIndexNewController extends Controller 
     @service notifications;
     @service events;
     @tracked overlay;
-    @tracked fuelReport = this.fuelReportActions.createNewInstance({ reporter: this.currentUser.user });
+    @tracked fuelReport = this.fuelReportActions.createNewInstance({});
 
     @task *save(fuelReport) {
         try {
@@ -35,6 +35,6 @@ export default class ManagementFuelReportsIndexNewController extends Controller 
     }
 
     @action resetForm() {
-        this.fuelReport = this.fuelReportActions.createNewInstance({ reporter: this.currentUser.user });
+        this.fuelReport = this.fuelReportActions.createNewInstance({});
     }
 }

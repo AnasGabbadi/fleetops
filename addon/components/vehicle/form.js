@@ -12,6 +12,27 @@ export default class VehicleFormComponent extends Component {
     @service modalsManager;
     @tracked statusOptions = ['active', 'pending'];
     
+    constructor() {
+        super(...arguments);
+        this.loadRelations.perform();
+    }
+
+    @task *loadRelations() {
+        const vehicle = this.args.resource;
+        try {
+            // Charger la flotte
+            if (vehicle && !vehicle.fleet) {
+                yield vehicle.belongsTo('fleet').reload();
+            }
+            // Charger le conducteur
+            if (vehicle && !vehicle.driver) {
+                yield vehicle.belongsTo('driver').reload();
+            }
+        } catch (err) {
+            console.warn('Error loading relations:', err);
+        }
+    }
+    
     @action updateAvatarUrl(option) {
         this.args.resource.avatar_url = option.key === 'custom_avatar' ? option.value : [option.value];
     }

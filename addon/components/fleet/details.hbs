@@ -1,32 +1,80 @@
 <div class="details-wrapper" ...attributes>
-    <ContentPanel @title={{t "common.details"}} @open={{true}} @wrapperClass="bordered-top">
+    <ContentPanel @title="Détails Flotte" @open={{true}} @wrapperClass="bordered-top">
         <div class="grid grid-cols-2 gap-2 text-xs dark:text-gray-100">
-            <div class="field-info-container">
-                <div class="field-name">{{t "common.name"}}</div>
-                <div class="field-value">{{n-a @resource.name}}</div>
+            
+            <div class="field-info-container col-span-2">
+                <div class="field-name">Nom</div>
+                <div class="field-value font-semibold text-lg">{{n-a @resource.name}}</div>
             </div>
+
             <div class="field-info-container">
-                <div class="field-name">{{t "resource.service-area"}}</div>
-                <div class="field-value">{{n-a @resource.service_area.name}}</div>
+                <div class="field-name">Niveau</div>
+                <div class="field-value">{{n-a @resource.fleet_level}}</div>
             </div>
+
             <div class="field-info-container">
-                <div class="field-name">{{t "resource.zone"}}</div>
-                <div class="field-value">{{n-a @resource.zone.name}}</div>
+                <div class="field-name">Statut</div>
+                <div class="field-value">
+                    <span class="px-2 py-1 rounded text-white text-[10px] {{if (eq @resource.status "active") "bg-green-500" (if (eq @resource.status "inactive") "bg-gray-500" "bg-red-500")}}">
+                        {{@resource.status}}
+                    </span>
+                </div>
             </div>
+
+            {{#if @resource.parent_fleet}}
             <div class="field-info-container">
-                <div class="field-name">{{t "fleet.fields.task"}}</div>
-                <div class="field-value">{{n-a @resource.task}}</div>
+                <div class="field-name">Flotte parente</div>
+                <div class="field-value">{{n-a @resource.parent_fleet.name}}</div>
             </div>
+            {{/if}}
+
+            {{#if @resource.country}}
             <div class="field-info-container">
-                <div class="field-name">{{t "fleet.fields.active-manpower"}}</div>
-                <div class="field-value">{{@resource.drivers_online_count}} of {{@resource.drivers_count}} Online</div>
+                <div class="field-name">Pays</div>
+                <div class="field-value">{{n-a @resource.country}}</div>
             </div>
+            {{/if}}
+
+            {{#if @resource.city}}
             <div class="field-info-container">
-                <div class="field-name">{{t "common.date-created"}}</div>
-                <div class="field-value">{{@resource.createdAtShort}}</div>
+                <div class="field-name">Ville</div>
+                <div class="field-value">{{n-a @resource.city}}</div>
             </div>
+            {{/if}}
+
+            <div class="field-info-container">
+                <div class="field-name">Véhicules</div>
+                <div class="field-value font-semibold text-blue-600">{{@resource.vehicles_count}}</div>
+            </div>
+
         </div>
     </ContentPanel>
 
-    <CustomField::Yield @subject={{@resource}} @viewMode={{true}} @wrapperClass="bordered-top" />
+    {{! LISTE VÉHICULES ASSIGNÉS }}
+    <ContentPanel @title="Véhicules assignés ({{@resource.vehicles_count}})" @open={{true}} @wrapperClass="bordered-top">
+        {{#if @resource.vehicles.length}}
+        <div class="space-y-2">
+            {{#each @resource.vehicles as |vehicle|}}
+            <div class="flex items-center justify-between bg-gray-50 dark:bg-gray-800 p-3 rounded border">
+                <div class="flex-1">
+                    <div class="font-semibold text-sm">{{vehicle.plate_number}}</div>
+                    <div class="text-xs text-gray-600 dark:text-gray-400">
+                        VIN: {{vehicle.vin}}</div>
+                    <div class="text-xs text-gray-600 dark:text-gray-400">
+                        {{vehicle.make}} {{vehicle.model}} ({{vehicle.year}}) - 
+                        <span class="{{if (eq vehicle.status "active") "text-green-600" "text-gray-600"}}">
+                            {{vehicle.status}}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+        {{else}}
+        <div class="text-center py-6 text-gray-500">
+            <p>Aucun véhicule assigné à cette flotte</p>
+        </div>
+        {{/if}}
+    </ContentPanel>
+
 </div>

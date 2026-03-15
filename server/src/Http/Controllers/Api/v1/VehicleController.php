@@ -29,6 +29,7 @@ class VehicleController extends Controller
         $input = $request->only([
             'status', 'make', 'model', 'year', 'version', 'trim', 'type', 'plate_number', 'vin', 
             'meta', 'location', 'online', 'altitude', 'heading', 'speed',
+            'fleet_uuid',
             'loan_provider', 'loan_last_payment',
             'assurance_date', 'assurance_expiry', 'vignette_date', 'vignette_expiry',
             'visite_technique_date', 'visite_technique_expiry', 'carte_grise_date', 'carte_grise_expiry'
@@ -106,6 +107,7 @@ class VehicleController extends Controller
         $input = $request->only([
             'status', 'make', 'model', 'year', 'version', 'trim', 'type', 'plate_number', 'vin', 
             'meta', 'location', 'online', 'altitude', 'heading', 'speed',
+            'fleet_uuid',
             'loan_provider', 'loan_last_payment',
             'assurance_date', 'assurance_expiry', 'vignette_date', 'vignette_expiry',
             'visite_technique_date', 'visite_technique_expiry', 'carte_grise_date', 'carte_grise_expiry'

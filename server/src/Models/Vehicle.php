@@ -216,6 +216,8 @@ class Vehicle extends Model
         'visite_technique_expiry',
         'carte_grise_date',
         'carte_grise_expiry',
+
+        'fleet_uuid',
     ];
 
     /**
@@ -257,6 +259,7 @@ class Vehicle extends Model
      * @var array
      */
     protected $casts = [
+        'fleet_uuid' => 'string',
         // Money values
         'current_value'    => Money::class,
         'insurance_value'  => Money::class,
@@ -879,5 +882,10 @@ class Vehicle extends Model
         $this->vin_data = $vinData;
 
         return $vinData;
+    }
+
+    public function fleet()
+    {
+        return $this->belongsTo(Fleet::class, 'fleet_uuid', 'uuid');
     }
 }

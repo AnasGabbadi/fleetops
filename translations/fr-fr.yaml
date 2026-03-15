@@ -73,6 +73,7 @@ menu:
   routing: Itinéraires
   custom-fields: Champs personnalisés
   order-board: Tableau des commandes
+  maintenances: Maintenances
 resource:
   asset: Actif
   assets: Actifs
@@ -1823,3 +1824,46 @@ settings:
       button-continue: Continuer
       button-start: Commencer l'intégration maintenant
       button-in-progress: Intégration en cours
+maintenance:
+  resources:
+    maintenances: "Gestion des Maintenances"
+  columns:
+    reference: "Référence"
+    vehicle: "Véhicule"
+    garage: "Garage"
+    serviceType: "Type de Service"
+    appointmentDate: "Date du Rendez-vous"
+    status: "Statut"
+    totalCost: "Montant Total"
+    paymentStatus: "Statut Paiement"
+  status:
+    pending: "En attente"
+    confirmed: "Confirmée"
+    inProgress: "En cours"
+    completed: "Terminée"
+    cancelled: "Annulée"
+  payment:
+    pending: "En attente"
+    partial: "Partielle"
+    completed: "Payée"
+  card:
+    vehicle: "Véhicule"
+    appointment: "Rendez-vous"
+    total: "Montant Total"
+  bulk:
+    confirm: "Confirmer"
+    cancel: "Annuler"
+  errors:
+    loadFailed: "Erreur lors du chargement des maintenances"
+  actions:
+    exported: "Données exportées avec succès"
+buttons:
+  create: "Créer"
+  export: "Exporter"
+  refresh: "Actualiser"
+  confirm: "Confirmer"
+  cancel: "Annuler"
+  viewMore: "Voir plus"
+  view: "Voir"
+  edit: "Éditer"
+  delete: "Supprimer"

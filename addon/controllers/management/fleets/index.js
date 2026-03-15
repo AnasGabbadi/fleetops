@@ -10,6 +10,7 @@ export default class ManagementFleetsIndexController extends Controller {
     @service vendorActions;
     @service tableContext;
     @service intl;
+    @service store;
 
     /** query params */
     @tracked queryParams = ['page', 'limit', 'sort', 'query', 'public_id', 'zone', 'service_area', 'parent_fleet', 'vendor', 'created_by', 'updated_by', 'status', 'task', 'name'];
@@ -25,7 +26,7 @@ export default class ManagementFleetsIndexController extends Controller {
     @tracked name;
     @tracked status;
     @tracked table;
-
+    
     /** action buttons */
     get actionButtons() {
         return [
@@ -86,20 +87,35 @@ export default class ManagementFleetsIndexController extends Controller {
                 filterComponent: 'filter/string',
             },
             {
-                label: this.intl.t('column.service-area'),
-                cellComponent: 'table/cell/anchor',
-                action: async (fleet) => {
-                    const serviceArea = await fleet.get('service_area');
-                    this.serviceAreaActions.modal.view(serviceArea);
-                },
-                permission: 'fleet-ops view service-area',
-                valuePath: 'service_area.name',
+                label: 'Niveau de flotte',
+                valuePath: 'fleet_level',
+                cellComponent: 'table/cell/base',
                 resizable: true,
+                sortable: true,
                 filterable: true,
-                filterComponent: 'filter/model',
-                filterComponentPlaceholder: 'Select service area',
-                filterParam: 'service_area',
-                model: 'service-area',
+                filterComponent: 'filter/multi-option',
+                filterOptions: [
+                    { label: 'PAYS', value: 'PAYS' },
+                    { label: 'VILLE', value: 'VILLE' },
+                ],
+            },
+            {
+                label: 'Pays',
+                valuePath: 'country',
+                cellComponent: 'table/cell/base',
+                resizable: true,
+                sortable: true,
+                filterable: true,
+                filterComponent: 'filter/string',
+            },
+            {
+                label: 'Ville',
+                valuePath: 'city',
+                cellComponent: 'table/cell/base',
+                resizable: true,
+                sortable: true,
+                filterable: true,
+                filterComponent: 'filter/string',
             },
             {
                 label: this.intl.t('column.parent-fleet'),
@@ -118,72 +134,12 @@ export default class ManagementFleetsIndexController extends Controller {
                 model: 'fleet',
             },
             {
-                label: this.intl.t('column.vendor'),
-                cellComponent: 'table/cell/anchor',
-                permission: 'fleet-ops view vendor',
-                action: async (fleet) => {
-                    const vendor = await fleet.get('vendor');
-                    this.vendorActions.modal.view(vendor);
-                },
-                valuePath: 'vendor.name',
-                resizable: true,
-                hidden: true,
-                filterable: true,
-                filterComponent: 'filter/model',
-                filterComponentPlaceholder: 'Select vendor',
-                filterParam: 'vendor',
-                model: 'vendor',
-            },
-            {
-                label: this.intl.t('column.zone'),
-                cellComponent: 'table/cell/anchor',
-                permission: 'fleet-ops view zone',
-                action: async (fleet) => {
-                    const zone = await fleet.get('zone');
-                    this.zoneActions.modal.view(zone);
-                },
-                valuePath: 'zone.name',
-                resizable: true,
-                filterable: true,
-                filterComponent: 'filter/model',
-                filterComponentPlaceholder: 'Select zone',
-                filterParam: 'zone',
-                model: 'zone',
-            },
-            {
-                label: this.intl.t('column.id'),
-                valuePath: 'public_id',
-                cellComponent: 'click-to-copy',
-                action: this.fleetActions.transition.view,
-                hidden: true,
-                resizable: true,
-                sortable: true,
-                filterable: true,
-                filterComponent: 'filter/string',
-            },
-            {
-                label: this.intl.t('column.manpower'),
-                valuePath: 'drivers_count',
-                resizable: true,
-                sortable: true,
-                filterable: false,
-            },
-            {
-                label: this.intl.t('column.active-manpower'),
-                valuePath: 'drivers_online_count',
-                hidden: true,
-                resizable: true,
-                sortable: true,
-                filterable: false,
-            },
-            {
-                label: this.intl.t('column.task'),
-                valuePath: 'task',
+                label: 'Véhicules',
+                valuePath: 'vehicles_count',
                 cellComponent: 'table/cell/base',
                 resizable: true,
                 sortable: true,
-                filterable: true,
-                filterComponent: 'filter/string',
+                filterable: false,
             },
             {
                 label: this.intl.t('column.status'),
@@ -239,9 +195,9 @@ export default class ManagementFleetsIndexController extends Controller {
                         permission: 'fleet-ops update fleet',
                     },
                     {
-                        label: this.intl.t('fleet.actions.assign-driver'),
-                        permission: 'fleet-ops assign-driver-for fleet',
-                        fn: () => {},
+                        label: 'Attribuer des véhicules à la flotte',
+                        fn: this.fleetActions.assignVehicles,
+                        permission: 'fleet-ops update fleet',
                     },
                     {
                         separator: true,

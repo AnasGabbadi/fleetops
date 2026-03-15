@@ -200,6 +200,7 @@ Route::prefix(config('fleetops.api.routing.prefix', null))->namespace('Fleetbase
             $router->group(['prefix' => 'onboard'], function () use ($router) {
                 $router->get('driver-onboard-settings/{companyId}', 'NavigatorController@getDriverOnboardSettings');
             });
+            
         });
 
         /*
@@ -423,7 +424,42 @@ Route::prefix(config('fleetops.api.routing.prefix', null))->namespace('Fleetbase
                             $router->post('{id}/test-connection', $controller('testConnection'));
                             $router->post('{key}/test-credentials', $controller('testCredentials'));
                         });
-                        $router->fleetbaseRoutes('work-orders');
+                        // Maintenance Module Routes
+                        $router->fleetbaseRoutes('repair-products', function ($router, $controller) {
+                            $router->get('category/{category}', $controller('byCategory'));
+                            $router->get('sku/{sku}', $controller('bySku'));
+                            $router->post('{id}/increase-stock', $controller('increaseStock'));
+                            $router->post('{id}/decrease-stock', $controller('decreaseStock'));
+                        });
+
+                        $router->fleetbaseRoutes('garages', function ($router, $controller) {
+                            $router->get('city/{city}', $controller('byCity'));
+                            $router->get('{id}/slots', $controller('slots'));
+                            $router->get('top-rated', $controller('topRated'));
+                            $router->get('service/{service}', $controller('byService'));
+                        });
+
+                        $router->fleetbaseRoutes('appointment-slots', function ($router, $controller) {
+                            $router->get('available', $controller('available'));
+                            $router->post('{id}/book', $controller('book'));
+                            $router->post('{id}/cancel-booking', $controller('cancelBooking'));
+                            $router->get('garage/{garageUuid}', $controller('byGarage'));
+                            $router->get('date/{date}', $controller('byDate'));
+                            $router->post('bulk-create', $controller('bulkCreate'));
+                        });
+
+                        $router->fleetbaseRoutes('maintenance-requests', function ($router, $controller) {
+                            $router->post('{id}/confirm', $controller('confirm'));
+                            $router->post('{id}/start', $controller('start'));
+                            $router->post('{id}/complete', $controller('complete'));
+                            $router->post('{id}/mark-paid', $controller('markPaid'));
+                            $router->post('{id}/cancel', $controller('cancel'));
+                            $router->post('{id}/apply-discount', $controller('applyDiscount'));
+                            $router->get('status/{status}', $controller('byStatus'));
+                            $router->get('overdue', $controller('overdue'));
+                            $router->get('{id}/cost-breakdown', $controller('costBreakdown'));
+                        });
+
                         $router->fleetbaseRoutes('maintenance');
                         $router->fleetbaseRoutes('equipment');
                         $router->fleetbaseRoutes('parts');

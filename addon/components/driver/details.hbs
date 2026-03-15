@@ -41,16 +41,21 @@
                 <div class="field-value">{{n-a @resource.vendor_name}}</div>
             </div> --}}
             <div class="col-span-3"></div>
-            <div class="field-info-container">
-                <div class="field-name">Ville</div>
-                <div class="field-value">{{n-a @resource.city}}</div>
-            </div>
+            {{!-- <div class="field-info-container">
+                <div class="field-name">Flotte</div>
+                <div class="field-value">{{#if @resource.fleet}}{{n-a @resource.fleet.name}}{{else}}-{{/if}}</div>
+            </div>   --}}
             <div class="field-info-container">
                 <div class="field-name">Pays</div>
                 <div class="field-value">
                     <CountryName @country={{@resource.country}} />
                 </div>
             </div>
+            <div class="field-info-container">
+                <div class="field-name">Ville</div>
+                <div class="field-value">{{n-a @resource.city}}</div>
+            </div>
+
             {{!-- <div class="field-info-container md:col-span-3">
                 <div class="field-name">Coordonnées</div>
                 <div class="field-value">{{point-coordinates @resource.location}}</div>

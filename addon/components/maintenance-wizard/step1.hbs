@@ -1,0 +1,294 @@
+<div class="flex flex-col h-full gap-5 px-1 pt-2 pb-0">
+
+  {{!-- Header --}}
+  <div class="flex-shrink-0 px-1">
+    <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 tracking-tight">
+      🚗 Sélection du Véhicule
+    </h3>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+      Choisissez le véhicule pour lequel vous demandez une maintenance
+    </p>
+  </div>
+
+  {{#if this.isLoading}}
+    <div class="flex items-center justify-center p-12 flex-1
+                text-gray-500 dark:text-gray-400">
+      <div class="text-center space-y-2">
+        <div class="animate-spin text-2xl">⚙️</div>
+        <span class="text-sm">Chargement des véhicules...</span>
+      </div>
+    </div>
+  {{else}}
+
+    {{!-- Filtres --}}
+    <div class="flex-shrink-0
+                bg-gray-50 dark:bg-gray-800
+                border border-gray-200 dark:border-gray-700
+                rounded-xl px-4 py-3 space-y-3">
+
+      <div class="flex items-center justify-between">
+        <span class="text-sm font-semibold text-gray-600 dark:text-gray-300">
+          🔍 Filtres de recherche
+        </span>
+        <span class="text-xs font-medium
+                     bg-sky-100 dark:bg-sky-500/20
+                     text-sky-600 dark:text-sky-400
+                     px-2.5 py-1 rounded-full">
+          {{this.filteredVehicles.length}} véhicule(s)
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+
+        <div class="space-y-1">
+          <label class="text-xs font-semibold uppercase tracking-wide
+                        text-gray-400 dark:text-gray-500">
+            Flotte
+          </label>
+          <select
+            class="form-select form-input-sm w-full rounded-lg transition
+                   bg-white dark:bg-gray-700
+                   border-gray-300 dark:border-gray-600
+                   text-gray-800 dark:text-gray-100
+                   hover:border-sky-400 dark:hover:border-sky-500"
+            {{on "change" this.onSelectFleet}}
+          >
+            <option value="">Toutes les flottes ({{this.fleetsList.length}})</option>
+            {{#each this.fleetsList as |fleet|}}
+              <option value={{fleet.id}}>{{fleet.name}}</option>
+            {{/each}}
+          </select>
+        </div>
+
+        <div class="space-y-1">
+          <label class="text-xs font-semibold uppercase tracking-wide
+                        text-gray-400 dark:text-gray-500">
+            Conducteur
+          </label>
+          <select
+            class="form-select form-input-sm w-full rounded-lg transition
+                   bg-white dark:bg-gray-700
+                   border-gray-300 dark:border-gray-600
+                   text-gray-800 dark:text-gray-100
+                   hover:border-sky-400 dark:hover:border-sky-500"
+            {{on "change" this.onSelectDriver}}
+          >
+            <option value="">Tous les conducteurs ({{this.driversList.length}})</option>
+            {{#each this.driversList as |driver|}}
+              <option value={{driver.id}}>{{driver.name}}</option>
+            {{/each}}
+          </select>
+        </div>
+
+        <div class="space-y-1">
+          <label class="text-xs font-semibold uppercase tracking-wide
+                        text-gray-400 dark:text-gray-500">
+            VIN
+          </label>
+          <input
+            type="text"
+            placeholder="Rechercher par VIN..."
+            value={{this.searchVin}}
+            {{on "input" this.onSearchVin}}
+            class="form-input form-input-sm w-full rounded-lg transition
+                   bg-white dark:bg-gray-700
+                   border-gray-300 dark:border-gray-600
+                   text-gray-800 dark:text-gray-100
+                   placeholder-gray-400 dark:placeholder-gray-500
+                   hover:border-sky-400 dark:hover:border-sky-500"
+          >
+        </div>
+
+        <div class="space-y-1">
+          <label class="text-xs font-semibold uppercase tracking-wide
+                        text-gray-400 dark:text-gray-500">
+            Immatriculation
+          </label>
+          <input
+            type="text"
+            placeholder="Rechercher par immatriculation..."
+            value={{this.searchPlate}}
+            {{on "input" this.onSearchPlate}}
+            class="form-input form-input-sm w-full rounded-lg transition
+                   bg-white dark:bg-gray-700
+                   border-gray-300 dark:border-gray-600
+                   text-gray-800 dark:text-gray-100
+                   placeholder-gray-400 dark:placeholder-gray-500
+                   hover:border-sky-400 dark:hover:border-sky-500"
+          >
+        </div>
+
+      </div>
+    </div>
+
+    {{!-- Main Content Grid --}}
+    <div class="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-4 min-h-0">
+
+      {{!-- Vehicles List - 2/3 --}}
+      <div class="lg:col-span-2 flex flex-col min-h-0 gap-2">
+        <label class="flex-shrink-0 text-sm font-semibold px-1
+                      text-gray-600 dark:text-gray-300">
+          📋 Véhicules disponibles
+        </label>
+        <div class="flex-1 min-h-0 overflow-hidden flex flex-col rounded-xl border
+                    bg-gray-50 dark:bg-gray-800
+                    border-gray-200 dark:border-gray-700">
+          {{#if this.filteredVehicles.length}}
+            <div class="flex-1 overflow-y-auto p-3">
+              <div class="space-y-2">
+                {{#each this.filteredVehicles as |vehicle|}}
+                  <button
+                    type="button"
+                    class="w-full text-left rounded-xl px-5 py-4 border transition-all duration-150
+                           {{if (eq this.selectedVehicle.id vehicle.id)
+                             'border-sky-500 bg-sky-50 dark:bg-sky-500/10
+                              shadow-md shadow-sky-500/10'
+                             'bg-white dark:bg-gray-900
+                              border-gray-200 dark:border-gray-700
+                              hover:border-sky-300 dark:hover:border-sky-600
+                              hover:shadow-sm dark:hover:bg-gray-800'}}"
+                    {{on "click" (fn this.selectVehicle vehicle)}}
+                  >
+                    <div class="flex items-center justify-between">
+                      <div class="flex-1 min-w-0">
+                        <div class="font-semibold text-base leading-snug
+                                    text-gray-900 dark:text-gray-100">
+                          {{vehicle.year}} {{vehicle.make}} {{vehicle.model}}
+                        </div>
+                        <div class="flex items-center gap-2 mt-1.5">
+                          <span class="font-mono text-xs truncate
+                                       text-gray-400 dark:text-gray-500">
+                            {{vehicle.vin}}
+                          </span>
+                          <span class="text-gray-300 dark:text-gray-600">|</span>
+                          <span class="text-sm font-semibold
+                                       text-gray-600 dark:text-gray-300">
+                            {{vehicle.plate_number}}
+                          </span>
+                        </div>
+                      </div>
+                      {{#if (eq this.selectedVehicle.id vehicle.id)}}
+                        <div class="w-6 h-6 rounded-full flex-shrink-0 ml-3
+                                    bg-sky-500 dark:bg-sky-400
+                                    flex items-center justify-center
+                                    text-white text-xs font-bold">
+                          ✓
+                        </div>
+                      {{/if}}
+                    </div>
+                  </button>
+                {{/each}}
+              </div>
+            </div>
+          {{else}}
+            <div class="flex items-center justify-center flex-1 p-10 text-center">
+              <div class="space-y-2">
+                <p class="text-2xl">🔍</p>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  Aucun résultat
+                </p>
+                <p class="text-xs text-gray-400 dark:text-gray-500">
+                  Aucun véhicule ne correspond à vos critères
+                </p>
+              </div>
+            </div>
+          {{/if}}
+        </div>
+      </div>
+
+      {{!-- Configuration - 1/3 --}}
+      <div class="flex flex-col min-h-0 gap-2">
+        <label class="flex-shrink-0 text-sm font-semibold px-1
+                      text-gray-600 dark:text-gray-300">
+          ⚙️ Configuration
+        </label>
+        <div class="flex-1 min-h-0 overflow-y-auto rounded-xl border p-4 space-y-4
+                    bg-gray-50 dark:bg-gray-800
+                    border-gray-200 dark:border-gray-700">
+
+          <div class="space-y-1.5">
+            <label class="text-xs font-semibold uppercase tracking-wider
+                          text-gray-400 dark:text-gray-500">
+              Type de prestation <span class="text-red-400">*</span>
+            </label>
+            <select
+              class="form-select form-input-sm w-full rounded-lg transition
+                     bg-white dark:bg-gray-700
+                     border-gray-300 dark:border-gray-600
+                     text-gray-800 dark:text-gray-100
+                     hover:border-sky-400 dark:hover:border-sky-500
+                     focus:border-sky-400 dark:focus:border-sky-400"
+              {{on "change" this.updateMaintenanceType}}
+            >
+              <option value="">Sélectionner un type...</option>
+              <option value="regular">🔧 Maintenance régulière</option>
+              <option value="repair">🛠️ Réparation</option>
+              <option value="inspection">✓ Inspection</option>
+              <option value="diagnostic">🔍 Diagnostic</option>
+              <option value="emergency">🚨 Urgence</option>
+            </select>
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-xs font-semibold uppercase tracking-wider
+                          text-gray-400 dark:text-gray-500">
+              Localisation <span class="text-red-400">*</span>
+            </label>
+            <select
+              class="form-select form-input-sm w-full rounded-lg transition
+                     bg-white dark:bg-gray-700
+                     border-gray-300 dark:border-gray-600
+                     text-gray-800 dark:text-gray-100
+                     hover:border-sky-400 dark:hover:border-sky-500
+                     focus:border-sky-400 dark:focus:border-sky-400"
+              {{on "change" this.updateCity}}
+            >
+              <option value="">Sélectionner une ville...</option>
+              <option value="Casablanca">📍 Casablanca</option>
+              <option value="Rabat">📍 Rabat</option>
+              <option value="Fez">📍 Fez</option>
+              <option value="Marrakech">📍 Marrakech</option>
+              <option value="Tangier">📍 Tangier</option>
+              <option value="Agadir">📍 Agadir</option>
+            </select>
+          </div>
+
+          {{#if this.selectedVehicle}}
+            <div class="pt-3 space-y-2 border-t
+                        border-gray-200 dark:border-gray-700">
+              <p class="text-xs font-semibold uppercase tracking-wider
+                        text-gray-400 dark:text-gray-500">
+                Sélection actuelle
+              </p>
+              <div class="rounded-lg px-3 py-2.5
+                          bg-sky-50 dark:bg-sky-500/10
+                          border border-sky-200 dark:border-sky-500/30">
+                <p class="text-sm font-semibold leading-snug
+                          text-sky-700 dark:text-sky-400">
+                  {{this.selectedVehicle.year}}
+                  {{this.selectedVehicle.make}}
+                  {{this.selectedVehicle.model}}
+                </p>
+                <p class="text-xs font-mono mt-1
+                          text-sky-500 dark:text-sky-300">
+                  {{this.selectedVehicle.plate_number}}
+                </p>
+              </div>
+            </div>
+          {{/if}}
+
+        </div>
+      </div>
+
+    </div>
+  {{/if}}
+
+  {{!-- Actions Footer --}}
+  <div class="border-t border-gray-200 dark:border-gray-700 px-6 py-4 flex flex-col sm:flex-row justify-between gap-3 flex-shrink-0 bg-white dark:bg-gray-800 w-full">
+    <div class="flex gap-2">
+      <button class="btn btn-secondary" {{on "click" @onCancel}}>Annuler</button>
+    </div>
+    <button class="btn btn-primary" disabled={{not this.isStep1Valid}} {{on "click" @onNext}}>Suivant →</button>
+  </div>
+
+</div>

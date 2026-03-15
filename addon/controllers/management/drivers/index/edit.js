@@ -18,6 +18,27 @@ export default class ManagementDriversIndexEditController extends Controller {
         },
     ];
 
+    @action setupComponent() {
+        // Charger les relations manquantes
+        this.loadRelations.perform(this.model);
+    }
+
+    @task *loadRelations(driver) {
+        try {
+            // Charger la flotte
+            if (driver && !driver.fleet) {
+                yield driver.belongsTo('fleet').reload();
+            }
+            // Charger le véhicule
+            if (driver && !driver.vehicle) {
+                yield driver.belongsTo('vehicle').reload();
+            }
+        } catch (err) {
+            // Silencieusement échouer si les relations n'existent pas
+            console.warn('Error loading relations:', err);
+        }
+    }
+
     @task *save(driver) {
         try {
             yield driver.save();

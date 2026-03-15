@@ -219,7 +219,7 @@ class FuelReport extends Model
             'volume'          => $volume,
             'metric_unit'     => $metricUnit,
             'status'          => $status,
-            'location'        => Utils::parsePointToWkt($location ?? new Point(0, 0)),
+            'location'        => null,
         ]);
 
         if ($reporter) {

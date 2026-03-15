@@ -8,7 +8,10 @@ export default class FuelReportFormComponent extends Component {
     }
 
     @action setReporter(user) {
+        // ✅ NE PAS REMPLIR AUTOMATIQUEMENT
+        if (!user) return;
+        
         this.args.resource.set('reporter', user);
-        this.args.resource.set('reported_by_uuid', user.id);
+        this.args.resource.set('reported_by_uuid', user.uuid);  // ← UTILISER uuid, pas id
     }
 }
