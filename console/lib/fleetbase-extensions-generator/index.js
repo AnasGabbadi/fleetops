@@ -176,26 +176,29 @@ module.exports = {
 
     applyKounHanyCustomizations(content, mountPath) {
         // Ignorer Storefront, Developers, Extensions
-        if (['storefront', 'developers', 'registry-bridge'].includes(mountPath)) {
+        if (['storefront', 'developers', 'iam', 'registry-bridge'].includes(mountPath)) {
             content = content.replace(
                 /menuService\.registerHeaderMenuItem\(/g,
                 '// menuService.registerHeaderMenuItem('
             );
         }
-        // Renommer Fleet-Ops → Fleet Management
-        if (mountPath === 'fleet-ops') {
-            content = content.replace(
-                "registerHeaderMenuItem('Fleet-Ops'",
-                "registerHeaderMenuItem('Fleet Management'"
-            );
-        }
-        // Renommer IAM → Access Management
-        if (mountPath === 'iam') {
-            content = content.replace(
-                "registerHeaderMenuItem('IAM'",
-                "registerHeaderMenuItem('Access Management'"
-            );
-        }
+
+        // // Renommer Fleet-Ops → Fleet Management
+        // if (mountPath === 'fleet-ops') {
+        //     content = content.replace(
+        //         "registerHeaderMenuItem('Fleet-Ops'",
+        //         "registerHeaderMenuItem('Fleet Management'"
+        //     );
+        // }
+        
+        // // Renommer IAM → Access Management
+        // if (mountPath === 'iam') {
+        //     content = content.replace(
+        //         "registerHeaderMenuItem('IAM'",
+        //         "registerHeaderMenuItem('Access Management'"
+        //     );
+        // }
+
         return content;
     },
 
@@ -229,8 +232,8 @@ module.exports = {
 
 export const EXTENSION_LOADERS = {
 ${Object.entries(loaders)
-    .map(([name, loader]) => `    '${name}': ${loader}`)
-    .join(',\n')}
+                .map(([name, loader]) => `    '${name}': ${loader}`)
+                .join(',\n')}
 };
 
 export const getExtensionLoader = (packageName) => {
