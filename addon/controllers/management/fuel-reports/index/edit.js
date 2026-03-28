@@ -10,7 +10,10 @@ export default class ManagementFuelReportsIndexEditController extends Controller
     @service notifications;
     @service modalsManager;
     @service events;
+    @service fetch;
+
     @tracked overlay;
+    @tracked formComponent;
     @tracked actionButtons = [
         {
             icon: 'eye',
@@ -18,9 +21,27 @@ export default class ManagementFuelReportsIndexEditController extends Controller
         },
     ];
 
+    @action setFormComponent(component) {
+        this.formComponent = component;
+    }
+
     @task *save(fuelReport) {
         try {
             yield fuelReport.save();
+
+            if (this.formComponent?.receiptImageFile) {
+                yield this.uploadReceiptImage(fuelReport, this.formComponent.receiptImageFile);
+            }
+
+            if (
+                this.formComponent?.receiptImagePreview === null &&
+                !this.formComponent?.receiptImageFile
+            ) {
+                fuelReport.set('receipt_image', null);
+                fuelReport.set('receipt_image_url', null);
+                yield fuelReport.save();
+            }
+
             this.events.trackResourceUpdated(fuelReport);
             this.overlay?.close();
 
@@ -36,11 +57,39 @@ export default class ManagementFuelReportsIndexEditController extends Controller
         }
     }
 
+    async uploadReceiptImage(fuelReport, imageFile) {
+        try {
+            const formData = new FormData();
+            formData.append('receipt_image', imageFile, imageFile.name);
+
+            // ✅ Même que new.js — supprimer Content-Type pour FormData
+            const allHeaders = this.fetch.getHeaders();
+            const { 'Content-Type': _, ...headersWithoutContentType } = allHeaders;
+
+            const response = await window.fetch(
+                `http://localhost:8000/int/v1/fuel-reports/${fuelReport.id}/upload-receipt`,
+                {
+                    method: 'POST',
+                    headers: headersWithoutContentType,
+                    body: formData,
+                }
+            );
+
+            const data = await response.json();
+
+            if (data.fuel_report?.receipt_image_url) {
+                fuelReport.set('receipt_image', data.fuel_report.receipt_image);
+                fuelReport.set('receipt_image_url', data.fuel_report.receipt_image_url);
+            }
+        } catch (error) {
+            this.notifications.warning('Le rapport a été mis à jour mais l\'image n\'a pas pu être uploadée');
+        }
+    }
+
     @action cancel() {
         if (this.model.hasDirtyAttributes) {
             return this.#confirmContinueWithUnsavedChanges(this.model);
         }
-
         return this.hostRouter.transitionTo('console.fleet-ops.management.fuel-reports.index');
     }
 
@@ -48,7 +97,6 @@ export default class ManagementFuelReportsIndexEditController extends Controller
         if (this.model.hasDirtyAttributes) {
             return this.#confirmContinueWithUnsavedChanges(this.model);
         }
-
         return this.hostRouter.transitionTo('console.fleet-ops.management.fuel-reports.index.details', this.model);
     }
 

@@ -67,6 +67,7 @@ class FuelReport extends Model
         'metric_unit',
         'meta',
         'status',
+        'receipt_image',
     ];
 
     /**
@@ -84,6 +85,7 @@ class FuelReport extends Model
     protected $casts = [
         'location' => Point::class,
         'meta'     => Json::class,
+        'receipt_image' => 'string',
     ];
 
     /**

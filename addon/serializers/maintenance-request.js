@@ -1,70 +1,63 @@
 import RESTSerializer from '@ember-data/serializer/rest';
+import { underscore } from '@ember/string';
 
 export default class MaintenanceRequestSerializer extends RESTSerializer {
-  primaryKey = 'id';
+  primaryKey = 'uuid';
+
+  keyForAttribute(key) {
+    return underscore(key);
+  }
 
   normalizeArrayResponse(store, primaryModelClass, payload, id, requestType) {
-    const items = payload.maintenanceRequests || [];
-
-    return {
+    const items = payload.maintenanceRequests || payload.data || [];
+    
+    const normalized = {
       data: items.map((item) => {
-        const vehicle = item.vehicle || {};
-        const garage  = item.garage || {};
-        const maintenanceItems = item.maintenanceItems || [];
-
+        const recordId = item.uuid || item.id;
+        if (!recordId) {
+          console.error('❌ Pas d\'id/uuid pour:', item);
+          return null;
+        }
         return {
-          id: item.id ?? item.publicId,
+          id: recordId,
           type: primaryModelClass.modelName,
-          attributes: {
-            publicId:             item.publicId,
-            vehicleUuid:          item.vehicleUuid,
-            garageUuid:           item.garageUuid,
-            appointmentSlotUuid:  item.appointmentSlotUuid,
-            maintenanceType:      item.maintenanceType,
-            status:               item.status,
-            priority:             item.priority,
-            paymentStatus:        item.paymentStatus,
-            city:                 item.city,
-            address:              item.address,
-            notes:                item.notes,
-            currency:             item.currency,
-            totalProductsCostMad: item.totalProductsCostMad,
-            garageServiceCostMad: item.garageServiceCostMad,
-            subtotalMad:          item.subtotalMad,
-            taxMad:               item.taxMad,
-            discountMad:          item.discountMad,
-            totalCostMad:         item.totalCostMad,
-            scheduledDate:        item.scheduledDate,
-            scheduledTime:        item.scheduledTime,
-            customerMessage:      item.customerMessage,
-            paymentMethod:        item.paymentMethod,
-            createdAt:            item.createdAt,
-            updatedAt:            item.updatedAt,
-
-            // objets complets (si tu en as besoin ailleurs)
-            vehicle,
-            garage,
-            maintenanceItems,
-
-            // 🔹 Champs plats pour le tableau
-            vehicleLabel:  item.vehicleLabel,
-            garageName:    item.garageName,
-            productsCount: item.productsCount,
-          },
+          attributes: this.normalizeItem(item),
         };
-      }),
-      meta: payload.meta,
+      }).filter(Boolean),
+      meta: payload.meta || {},
     };
+    
+    return normalized;
   }
 
   normalizeSingleResponse(store, primaryModelClass, payload, id, requestType) {
-    const item = payload.maintenanceRequest || payload;
-    return this.normalizeArrayResponse(
-      store,
-      primaryModelClass,
-      { maintenanceRequests: [item] },
-      id,
-      requestType
-    );
+    const item = payload.maintenanceRequest || payload.data || payload;
+    if (!item) {
+      console.error('❌ Pas de maintenance-request!');
+      return { data: null };
+    }
+    const recordId = item.uuid || item.id;
+    if (!recordId) {
+      console.error('❌ Pas d\'id/uuid pour:', item);
+      return { data: null };
+    }
+    return {
+      data: {
+        id: recordId,
+        type: primaryModelClass.modelName,
+        attributes: this.normalizeItem(item),
+      },
+      meta: payload.meta || {},
+    };
+  }
+
+  normalizeItem(item) {
+    const attributes = {};
+    for (const key in item) {
+      if (key === 'uuid' || key === 'id') continue;
+      const camelKey = key.replace(/_([a-z])/g, (g) => g[1].toUpperCase());
+      attributes[camelKey] = item[key];
+    }
+    return attributes;
   }
 }

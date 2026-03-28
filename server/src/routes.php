@@ -72,6 +72,7 @@ Route::prefix(config('fleetops.api.routing.prefix', null))->namespace('Fleetbase
                 $router->get('{id}', 'FuelReportController@find');
                 $router->put('{id}', 'FuelReportController@update');
                 $router->delete('{id}', 'FuelReportController@delete');
+                $router->post('{id}/upload-receipt', 'FuelReportController@uploadReceipt');
             });
             // orders routes
             $router->group(['prefix' => 'orders', 'middleware' => []], function () use ($router) {
@@ -300,6 +301,7 @@ Route::prefix(config('fleetops.api.routing.prefix', null))->namespace('Fleetbase
                                 $router->match(['get', 'post'], 'export', $controller('export'));
                                 $router->post('import', $controller('import'));
                                 $router->delete('bulk-delete', $controller('bulkDelete'));
+                                $router->post('{id}/upload-receipt', $controller('uploadReceipt'));
                             }
                         );
                         $router->fleetbaseRoutes(

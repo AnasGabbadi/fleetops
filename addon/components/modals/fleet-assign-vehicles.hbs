@@ -20,21 +20,59 @@
                     </InputGroup>
                 </div>
 
-                {{! LIGNE 2: Marque + Modèle + Version }}
+                {{! LIGNE 2: Marque + Modèle + Version - MODIFIÉ }}
                 <div class="grid grid-cols-3 gap-2">
                     <InputGroup @name="Marque">
-                        <Input @value={{this.filterMake}} @type="text" class="w-full form-input"
-                            placeholder="Ex: Peugeot..." />
+                        <div class="fleetbase-model-select fleetbase-power-select ember-model-select">
+                            <PowerSelect
+                                @options={{this.brands}}
+                                @selected={{this.selectedFilterBrand}}
+                                @onChange={{this.onFilterBrandChange}}
+                                @searchField="manuName"
+                                @placeholder="Toutes les marques"
+                                @triggerClass="form-select form-input"
+                                @allowClear={{true}}
+                                as |brand|>
+                                {{brand.manuName}}
+                            </PowerSelect>
+                        </div>
                     </InputGroup>
 
                     <InputGroup @name="Modèle">
-                        <Input @value={{this.filterModel}} @type="text" class="w-full form-input"
-                            placeholder="Ex: 308..." />
+                        <div class="fleetbase-model-select fleetbase-power-select ember-model-select">
+                            <PowerSelect
+                                @options={{this.models}}
+                                @selected={{this.selectedFilterModel}}
+                                @onChange={{this.onFilterModelChange}}
+                                @searchField="modelname"
+                                @placeholder={{if this.selectedFilterBrand "Tous les modèles" "Sélectionnez d'abord une marque"}}
+                                @triggerClass="form-select form-input"
+                                @disabled={{not this.selectedFilterBrand}}
+                                @allowClear={{true}}
+                                as |model|>
+                                {{model.modelname}}
+                            </PowerSelect>
+                        </div>
                     </InputGroup>
 
                     <InputGroup @name="Version">
-                        <Input @value={{this.filterVersion}} @type="text" class="w-full form-input"
-                            placeholder="Ex: GT..." />
+                        <div class="fleetbase-model-select fleetbase-power-select ember-model-select">
+                            <PowerSelect
+                                @options={{this.versions}}
+                                @selected={{this.selectedFilterVersion}}
+                                @onChange={{this.onFilterVersionChange}}
+                                @searchField="carName"
+                                @placeholder={{if this.selectedFilterModel "Toutes les versions" "Sélectionnez d'abord un modèle"}}
+                                @triggerClass="form-select form-input"
+                                @disabled={{not this.selectedFilterModel}}
+                                @allowClear={{true}}
+                                as |version|>
+                                <div>
+                                    <div class="font-semibold">{{version.carName}}</div>
+                                    <div class="text-xs text-gray-500">{{version.carDescription}}</div>
+                                </div>
+                            </PowerSelect>
+                        </div>
                     </InputGroup>
                 </div>
             </div>

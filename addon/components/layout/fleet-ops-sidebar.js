@@ -195,8 +195,8 @@ export default class LayoutFleetOpsSidebarComponent extends Component {
                 title: 'Dépannage',
                 icon: 'trailer',
                 route: 'maintenance.equipmen',
-                permission: 'fleet-ops list equipment',
-                visible: this.abilities.can('fleet-ops see equipment'),
+                permission: 'fleet-ops list depannage',
+                visible: this.abilities.can('fleet-ops see depannage'),
             },
             // {
             //     intl: 'menu.parts',

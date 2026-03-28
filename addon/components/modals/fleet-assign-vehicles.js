@@ -3,6 +3,7 @@ import { tracked } from '@glimmer/tracking';
 import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
 import { task } from 'ember-concurrency';
+import config from 'ember-get-config';
 
 export default class FleetAssignVehiclesComponent extends Component {
     @service store;
@@ -13,21 +14,54 @@ export default class FleetAssignVehiclesComponent extends Component {
     @tracked filterMake = '';
     @tracked filterModel = '';
     @tracked filterVersion = '';
-    @tracked availablePage = 1;  // ← PAGINATION DISPONIBLES
-    @tracked selectedPage = 1;   // ← PAGINATION SÉLECTIONNÉS
+    @tracked availablePage = 1;
+    @tracked selectedPage = 1;
     @tracked allVehicles = [];
     @tracked selectedVehicles = [];
     @tracked isLoaded = false;
     
-    vehiclesPerPage = 3;  // ← AFFICHER 4 VÉHICULES PAR PAGE
+    // Données Kounhany pour les filtres
+    @tracked brands = [];
+    @tracked models = [];
+    @tracked versions = [];
+    @tracked selectedFilterBrand = null;
+    @tracked selectedFilterModel = null;
+    @tracked selectedFilterVersion = null;
+    
+    vehiclesPerPage = 3;
+
+    // URLs des APIs depuis .env
+    get kounhanyBrandsApi() {
+        return config.KOUNHANY_BRANDS_API || 'https://kounhany.com/api/mock/garage/lite-car-brands';
+    }
+    
+    get kounhanyModelsApi() {
+        return config.KOUNHANY_MODELS_API || 'https://kounhany.com/api/mock/garage/lite-car-models';
+    }
+    
+    get kounhanyVersionsApi() {
+        return config.KOUNHANY_VERSIONS_API || 'https://kounhany.com/api/mock/garage/lite-car-vins';
+    }
 
     constructor() {
         super(...arguments);
         this.loadData.perform();
+        this.loadBrands(); // Charger les marques pour les filtres
     }
 
     get fleet() {
         return this.args.options?.fleet;
+    }
+
+    // Charger les marques depuis Kounhany
+    async loadBrands() {
+        try {
+            const response = await fetch(this.kounhanyBrandsApi);
+            const data = await response.json();
+            this.brands = data.brands || [];
+        } catch (error) {
+            console.error('Erreur chargement marques:', error);
+        }
     }
 
     @task *loadData() {
@@ -48,6 +82,64 @@ export default class FleetAssignVehiclesComponent extends Component {
             console.error('❌ ERREUR CHARGEMENT:', err);
             this.isLoaded = true;
         }
+    }
+
+    // Action quand une marque est sélectionnée dans les filtres
+    @action
+    async onFilterBrandChange(brand) {
+        this.selectedFilterBrand = brand;
+        this.selectedFilterModel = null;
+        this.selectedFilterVersion = null;
+        this.models = [];
+        this.versions = [];
+        
+        // Mettre à jour le filtre texte
+        this.filterMake = brand ? brand.manuName : '';
+        this.filterModel = '';
+        this.filterVersion = '';
+        
+        // Charger les modèles pour cette marque
+        if (brand) {
+            try {
+                const response = await fetch(`${this.kounhanyModelsApi}?brand=${brand.manuId}`);
+                const data = await response.json();
+                this.models = data.models || [];
+            } catch (error) {
+                console.error('Erreur chargement modèles:', error);
+            }
+        }
+    }
+    
+    // Action quand un modèle est sélectionné dans les filtres
+    @action
+    async onFilterModelChange(model) {
+        this.selectedFilterModel = model;
+        this.selectedFilterVersion = null;
+        this.versions = [];
+        
+        // Mettre à jour le filtre texte
+        this.filterModel = model ? model.modelname : '';
+        this.filterVersion = '';
+        
+        // Charger les versions pour ce modèle
+        if (model && this.selectedFilterBrand) {
+            try {
+                const response = await fetch(`${this.kounhanyVersionsApi}?brand=${this.selectedFilterBrand.manuId}&model=${model.modelId}`);
+                const data = await response.json();
+                this.versions = data.vins || [];
+            } catch (error) {
+                console.error('Erreur chargement versions:', error);
+            }
+        }
+    }
+    
+    // Action quand une version est sélectionnée dans les filtres
+    @action
+    onFilterVersionChange(version) {
+        this.selectedFilterVersion = version;
+        
+        // Mettre à jour le filtre texte
+        this.filterVersion = version ? version.carName : '';
     }
 
     get filteredAvailableVehicles() {
@@ -86,7 +178,6 @@ export default class FleetAssignVehiclesComponent extends Component {
         return vehicles;
     }
 
-    // ✅ PAGINER LES VÉHICULES DISPONIBLES
     get paginatedAvailableVehicles() {
         const start = (this.availablePage - 1) * this.vehiclesPerPage;
         const end = start + this.vehiclesPerPage;
@@ -97,7 +188,6 @@ export default class FleetAssignVehiclesComponent extends Component {
         return Math.ceil(this.filteredAvailableVehicles.length / this.vehiclesPerPage);
     }
 
-    // ✅ PAGINER LES VÉHICULES SÉLECTIONNÉS
     get paginatedSelectedVehicles() {
         const start = (this.selectedPage - 1) * this.vehiclesPerPage;
         const end = start + this.vehiclesPerPage;

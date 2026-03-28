@@ -49,14 +49,20 @@
                 <Input @value={{@resource.make}} @type="text" class="w-full form-input"
                     placeholder={{t "vehicle.fields.vehicle-make" }} disabled={{cannot-write @resource}} />
             </InputGroup> --}}
+            
+            {{! ← MODIFIÉ: Marque dynamique depuis Kounhany }}
             <InputGroup @name="Marque *">
                 <div class="fleetbase-model-select fleetbase-power-select ember-model-select">
                     <PowerSelect
-                        @options={{array "Renault" "Dacia" "Peugeot" "Citroën" "Toyota" "Hyundai" "Kia" "Volkswagen" "Ford" "Fiat" "Mercedes-Benz" "BMW" "Nissan" "Honda" "Suzuki" "Mitsubishi" "Chevrolet" "Opel" "Seat" "Skoda"
-                        }} @selected={{@resource.make}} @onChange={{this.setMake}}
-                        @placeholder="Sélectionner une marque" @triggerClass="form-select form-input"
-                        @disabled={{cannot-write @resource}} as |option|>
-                        {{option}}
+                        @options={{this.brands}}
+                        @selected={{this.selectedBrand}}
+                        @onChange={{this.onBrandChange}}
+                        @searchField="manuName"
+                        @placeholder="Sélectionner une marque"
+                        @triggerClass="form-select form-input"
+                        @disabled={{cannot-write @resource}}
+                        as |brand|>
+                        {{brand.manuName}}
                     </PowerSelect>
                 </div>
             </InputGroup>
@@ -65,14 +71,20 @@
                 <Input @value={{@resource.model}} @type="text" class="w-full form-input"
                     placeholder={{t "vehicle.fields.vehicle-model" }} disabled={{cannot-write @resource}} />
             </InputGroup> --}}
+            
+            {{! ← MODIFIÉ: Modèle dynamique depuis Kounhany }}
             <InputGroup @name="Modèle *">
                 <div class="fleetbase-model-select fleetbase-power-select ember-model-select">
                     <PowerSelect
-                        @options={{array "Clio" "Logan" "Sandero" "Kangoo" "208" "308" "3008" "Corolla" "Yaris" "Hilux" "Tucson" "Sportage" "Polo" "Golf" "Transit" "Sprinter" "Vito" "Navara" "Patrol" "Duster" "Dokker" "Berlingo" "Jumpy" "HiAce" "Fortuner" "Transporter"
-                        }} @selected={{@resource.model}} @onChange={{this.setModel}}
-                        @placeholder="Sélectionner un modèle" @triggerClass="form-select form-input"
-                        @disabled={{cannot-write @resource}} as |option|>
-                        {{option}}
+                        @options={{this.models}}
+                        @selected={{this.selectedModel}}
+                        @onChange={{this.onModelChange}}
+                        @searchField="modelname"
+                        @placeholder={{if this.selectedBrand "Sélectionner un modèle" "Sélectionnez d'abord une marque"}}
+                        @triggerClass="form-select form-input"
+                        @disabled={{or (cannot-write @resource) (not this.selectedBrand)}}
+                        as |model|>
+                        {{model.modelname}}
                     </PowerSelect>
                 </div>
             </InputGroup>
@@ -82,9 +94,24 @@
                     disabled={{cannot-write @resource}} />
             </InputGroup>
 
+            {{! ← MODIFIÉ: Version dynamique depuis Kounhany (PowerSelect au lieu de Input) }}
             <InputGroup @name="Version *">
-                <Input @value={{@resource.version}} @type="text" class="w-full form-input"
-                    placeholder="Ex: 1.5 DCI, 2.0 TDI" disabled={{cannot-write @resource}} />
+                <div class="fleetbase-model-select fleetbase-power-select ember-model-select">
+                    <PowerSelect
+                        @options={{this.versions}}
+                        @selected={{this.selectedVersion}}
+                        @onChange={{this.onVersionChange}}
+                        @searchField="carName"
+                        @placeholder={{if this.selectedModel "Sélectionner une version" "Sélectionnez d'abord un modèle"}}
+                        @triggerClass="form-select form-input"
+                        @disabled={{or (cannot-write @resource) (not this.selectedModel)}}
+                        as |version|>
+                        <div>
+                            <div class="font-semibold">{{version.carName}}</div>
+                            <div class="text-xs text-gray-500">{{version.carDescription}}</div>
+                        </div>
+                    </PowerSelect>
+                </div>
             </InputGroup>
 
             {{!--

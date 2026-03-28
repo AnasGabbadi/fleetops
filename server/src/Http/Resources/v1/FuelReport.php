@@ -38,6 +38,8 @@ class FuelReport extends FleetbaseResource
             'type'              => $this->type,
             'status'            => $this->status,
             'location'          => null,
+            'receipt_image' => $this->receipt_image,
+            'receipt_image_url' => $this->receipt_image ? url($this->receipt_image) : null,
             'updated_at'        => $this->updated_at,
             'created_at'        => $this->created_at,
         ]);
@@ -64,6 +66,8 @@ class FuelReport extends FleetbaseResource
             'type'               => $this->type,
             'status'             => $this->status,
             'location'           => $this->location ?? new Point(0, 0),
+            'receipt_image' => $this->receipt_image,
+            'receipt_image_url' => $this->receipt_image ? url($this->receipt_image) : null,
             'updated_at'         => $this->updated_at,
             'created_at'         => $this->created_at,
         ];

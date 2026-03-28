@@ -43,6 +43,7 @@ common:
   select-address: Select Address
 
 menu:
+  services: Services
   operations: Operations
   dashboard: Dashboard
   orders: Orders
@@ -78,6 +79,7 @@ menu:
   custom-fields: Custom Fields
   order-board: Order Board
   avatars: Avatars
+  maintenances: Maintenances
 
 resource:
   asset: Asset
@@ -1716,3 +1718,36 @@ settings:
       button-continue: Continue
       button-start: Start onboard now
       button-in-progress: Onboard in progress
+maintenance:
+  resources:
+    maintenances: "Maintenance Management"
+  columns:
+    reference: "Reference"
+    vehicle: "Vehicle"
+    garage: "Garage"
+    serviceType: "Service Type"
+    appointmentDate: "Appointment Date"
+    status: "Status"
+    totalCost: "Total Amount"
+    paymentStatus: "Payment Status"
+  status:
+    pending: "Pending"
+    confirmed: "Confirmed"
+    inProgress: "In Progress"
+    completed: "Completed"
+    cancelled: "Cancelled"
+  payment:
+    pending: "Pending"
+    partial: "Partial"
+    completed: "Paid"
+  card:
+    vehicle: "Vehicle"
+    appointment: "Appointment"
+    total: "Total Amount"
+  bulk:
+    confirm: "Confirm"
+    cancel: "Cancel"
+  errors:
+    loadFailed: "Failed to load maintenances"
+  actions:
+    exported: "Data exported successfully"

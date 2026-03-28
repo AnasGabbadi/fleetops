@@ -74,12 +74,17 @@ export default class MaintenanceWizardStep4Component extends Component {
     const tax = parseFloat((subtotal * 0.20).toFixed(2));
     const total = parseFloat((subtotal + tax).toFixed(2));
 
+    // ✅ AJOUTER LES CHAMPS CALCULÉS
+    const vehicleLabel = `${vehicle?.year ?? ''} ${vehicle?.make ?? ''} ${vehicle?.model ?? ''}`.trim();
+    const garageName = garage?.name ?? null;
+    const productsCount = cartItems?.length ?? 0;
+
     const maintenanceRequest = this.store.createRecord('maintenance-request', {
       companyUuid,
       userUuid,
-      vehicleUuid: vehicle?.id,
+      vehicleUuid: vehicle?.uuid ?? vehicle?.id,
       garageUuid: garage?.uuid ?? null,
-      appointmentSlotUuid: appointmentSlot?.uuid ?? null,
+      appointmentSlotUuid: null,  // ✅ CORRIGÉ
       maintenanceType,
       status: 'pending',
       priority: 'medium',
@@ -95,13 +100,15 @@ export default class MaintenanceWizardStep4Component extends Component {
       totalCostMad: total,
       scheduledDate,
       scheduledTime,
-      lineItems: (cartItems ?? []).map(i => ({
-        uuid: i.uuid,
-        name: i.name,
-        sku: i.sku,
+      vehicleLabel,
+      garageName,
+      productsCount,
+      products: (cartItems ?? []).map(i => ({
+        repair_product_uuid: i.productId,
+        product_name: i.name,
+        product_sku: i.sku,
         quantity: i.quantity,
-        unit_price: i.unitPrice,
-        total: i.unitPrice * i.quantity,
+        unit_price_mad: i.unitPrice,
       })),
       meta: {
         garage_name: garage?.name,

@@ -1,6 +1,7 @@
 fleet-ops:
   extension-name: Fleet-Ops
 common:
+  unauthorized-access: Accès non autorisé
   proof-of-delivery: Preuve de livraison
   ad-hoc: Ad hoc
   bulk-dispatch: Envoi en masse

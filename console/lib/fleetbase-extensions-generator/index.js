@@ -176,7 +176,7 @@ module.exports = {
 
     applyKounHanyCustomizations(content, mountPath) {
         // Ignorer Storefront, Developers, Extensions
-        if (['storefront', 'developers', 'iam', 'registry-bridge'].includes(mountPath)) {
+        if (['storefront', 'developers', 'registry-bridge'].includes(mountPath)) {
             content = content.replace(
                 /menuService\.registerHeaderMenuItem\(/g,
                 '// menuService.registerHeaderMenuItem('

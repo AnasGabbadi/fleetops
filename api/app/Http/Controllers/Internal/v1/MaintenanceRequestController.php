@@ -24,7 +24,10 @@ class MaintenanceRequestController extends FleetOpsController
 
             unset($snakeInput['created_by_uuid'], $snakeInput['updated_by_uuid'], $snakeInput['public_id']);
 
-            $snakeInput['company_uuid']   = session('company') ?? $snakeInput['company_uuid'] ?? null;
+            $snakeInput['company_uuid'] = session('company') 
+                ?? $snakeInput['company_uuid'] 
+                ?? $request->user()->company_uuid 
+                ?? null;
             $snakeInput['user_uuid']      = session('user') ?? $snakeInput['user_uuid'] ?? null;
             $snakeInput['priority']       = $snakeInput['priority'] ?? 'medium';
             $snakeInput['status']         = $snakeInput['status'] ?? 'pending';
@@ -72,12 +75,14 @@ public function queryRecords(Request $request)
 
         //  $results = \Fleetbase\FleetOps\Models\MaintenanceRequest::orderBy('created_at', 'desc')
         //     ->paginate($limit, ['*'], 'page', $page);
-
+        $companyUuid = session('company') ?? $request->user()->company_uuid;
+        
         $results = \Fleetbase\FleetOps\Models\MaintenanceRequest::with([
                 'vehicle',
                 'garage',
                 'maintenanceItems.repairProduct',
             ])
+             ->where('company_uuid', $companyUuid)
             ->orderBy($sortColumn, $sortDesc ? 'desc' : 'asc')
             ->paginate($limit, ['*'], 'page', $page);
 

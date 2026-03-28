@@ -27,7 +27,7 @@
 
             {{! Niveau de flotte }}
             <InputGroup @name="Niveau de flotte" @wrapperClass="mb-0i">
-                <PowerSelect @options={{array "PAYS" "VILLE" "ZONE" }} @selected={{@resource.fleet_level}}
+                <PowerSelect @options={{array "PAYS" "VILLE" }} @selected={{@resource.fleet_level}}
                     @onChange={{fn (mut @resource.fleet_level)}} @placeholder="Sélectionner le niveau"
                     @triggerClass="form-select form-input" @disabled={{cannot-write @resource}} as |option|>
                     {{option}}
@@ -45,16 +45,28 @@
                 </ModelSelect>
             </InputGroup>
 
-            {{! Pays }}
+            {{! Pays - MODIFIÉ: Fixé sur Morocco (disabled) }}
             <InputGroup @name="Pays" @wrapperClass="mb-0i">
-                <CountrySelect class="w-full form-input form-select form-datalist" @value={{@resource.country}}
-                    @onChange={{fn (mut @resource.country)}} disabled={{cannot-write @resource}} />
+                <Input @value={{@resource.country}} @type="text" class="w-full form-input bg-gray-100 dark:bg-gray-700"
+                    disabled={{true}} />
             </InputGroup>
 
-            {{! Ville }}
+            {{! Ville - MODIFIÉ: PowerSelect dynamique avec API Kounhany }}
             <InputGroup @name="Ville" @wrapperClass="mb-0i">
-                <Input @value={{@resource.city}} @type="text" class="w-full form-input" placeholder="Ex: Casablanca"
-                    disabled={{cannot-write @resource}} />
+                <div class="fleetbase-model-select fleetbase-power-select ember-model-select">
+                    <PowerSelect
+                        @options={{this.cities}}
+                        @selected={{this.selectedCity}}
+                        @onChange={{this.onCityChange}}
+                        @searchField="city"
+                        @placeholder="Sélectionner une ville..."
+                        @triggerClass="form-select form-input"
+                        @disabled={{cannot-write @resource}}
+                        @allowClear={{true}}
+                        as |city|>
+                        {{city.city}}
+                    </PowerSelect>
+                </div>
             </InputGroup>
 
         </div>

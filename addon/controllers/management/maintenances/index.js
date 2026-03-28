@@ -11,6 +11,7 @@ export default class ManagementMaintenancesIndexController extends Controller {
   @service appCache;
   @service store;
   @service notifications;
+  @service abilities;
 
   @tracked layout = this.appCache.get('fleetops:maintenances:layout', 'table');
   @tracked page = 1;
@@ -19,48 +20,96 @@ export default class ManagementMaintenancesIndexController extends Controller {
   @tracked filters = {};
   @tracked table;
   @tracked sort = '-createdAt';
+  @tracked model = [];
+
+  constructor() {
+    super(...arguments);
+    this.loadMaintenances.perform();
+  }
 
   get columns() {
     return [
       {
         label: 'Véhicule',
-        valuePath: 'vehicleLabel',
+        valuePath: 'vehicleUuid',
       },
       {
         label: 'Garage',
-        valuePath: 'garageName',
+        valuePath: 'garageUuid',
       },
       {
         label: 'Prestation',
         valuePath: 'maintenanceType',
-      },
-      {
-        label: 'Produits',
-        valuePath: 'productsCount',
-        width: '90px',
+        resizable: true,
+        sortable: true,
+        filterable: true,
       },
       {
         label: 'Coût total (MAD)',
         valuePath: 'totalCostMad',
         textAlign: 'right',
         width: '130px',
+        resizable: true,
+        sortable: true,
       },
       {
         label: 'Statut maintenance',
         valuePath: 'status',
+        cellComponent: 'table/cell/status',
+        resizable: true,
+        sortable: true,
+        filterable: true,
+        filterComponent: 'filter/multi-option',
+        filterOptions: ['pending', 'confirmed', 'in-progress', 'completed', 'cancelled'],
       },
       {
         label: 'Statut paiement',
         valuePath: 'paymentStatus',
+        cellComponent: 'table/cell/status',
+        resizable: true,
+        sortable: true,
+        filterable: true,
+        filterComponent: 'filter/multi-option',
+        filterOptions: ['unpaid', 'partial', 'paid', 'refunded'],
       },
       {
         label: 'Date prévue',
         valuePath: 'scheduledDate',
+        resizable: true,
+        sortable: true,
+        filterable: true,
+        filterComponent: 'filter/date',
       },
       {
         label: 'Heure',
         valuePath: 'scheduledTime',
         width: '80px',
+        resizable: true,
+        sortable: true,
+      },
+      {
+        label: '',
+        cellComponent: 'table/cell/dropdown',
+        ddButtonText: false,
+        ddButtonIcon: 'ellipsis-h',
+        ddButtonIconPrefix: 'fas',
+        cellClassNames: 'overflow-visible',
+        wrapperClass: 'flex items-center justify-end mx-2',
+        sticky: 'right',
+        width: 60,
+        actions: [
+          {
+            label: 'Voir détails',
+            fn: this.maintenanceActions.viewMaintenance,
+            permission: 'fleet-ops see maintenance-request',
+          },
+          {
+            label: 'Supprimer',
+            fn: this.maintenanceActions.deleteMaintenance,
+            isDanger: true,
+            permission: 'fleet-ops delete maintenance-request',
+          },
+        ],
       },
     ];
   }
@@ -112,29 +161,6 @@ export default class ManagementMaintenancesIndexController extends Controller {
     ];
   }
 
-  get bulkActions() {
-    return [
-      {
-        label: 'maintenance.bulk.confirm',
-        action: this.bulkConfirmMaintenances,
-        icon: 'check',
-      },
-      {
-        label: 'maintenance.bulk.cancel',
-        action: this.bulkCancelMaintenances,
-        icon: 'trash',
-        isDanger: true,
-      },
-    ];
-  }
-
-  @task({ drop: true })
-  *controllerSearchTask(query) {
-    this.query = query;
-    this.page = 1;
-    yield this.loadMaintenances.perform();
-  }
-
   @task({ restartable: true })
   *loadMaintenances() {
     try {
@@ -150,11 +176,11 @@ export default class ManagementMaintenancesIndexController extends Controller {
 
       Object.assign(queryParams, this.filters);
 
-      const maintenances = yield this.store.query('maintenance-request', queryParams);
-
-      return maintenances;
+      this.model = yield this.store.query('maintenance-request', queryParams);
+      return this.model;
     } catch (error) {
-      this.notifications.error('maintenance.errors.loadFailed');
+      console.error('❌ ERREUR:', error);
+      this.notifications.error('Erreur chargement maintenances');
     }
   }
 
@@ -162,7 +188,7 @@ export default class ManagementMaintenancesIndexController extends Controller {
   exportMaintenances() {
     const csv = this.generateCSV();
     this.downloadCSV(csv, 'maintenances.csv');
-    this.notifications.success('maintenance.actions.exported');
+    this.notifications.success('Données exportées');
   }
 
   @action
@@ -170,46 +196,12 @@ export default class ManagementMaintenancesIndexController extends Controller {
     this.loadMaintenances.perform();
   }
 
-  @action
-  bulkConfirmMaintenances(selections) {
-    //
-  }
-
-  @action
-  bulkCancelMaintenances(selections) {
-    //
-  }
-
-  @action
-  filterByStatus(status) {
-    if (status) {
-      this.filters.status = status;
-    } else {
-      delete this.filters.status;
-    }
-    this.page = 1;
-    this.loadMaintenances.perform();
-  }
-
-  @action
-  filterByPaymentStatus(paymentStatus) {
-    if (paymentStatus) {
-      this.filters.paymentStatus = paymentStatus;
-    } else {
-      delete this.filters.paymentStatus;
-    }
-    this.page = 1;
-    this.loadMaintenances.perform();
-  }
-
   generateCSV() {
     const model = this.model || [];
     let csv = 'Référence,Véhicule,Garage,Type,Date,Statut,Montant,Paiement\n';
-
     model.forEach((m) => {
-      csv += `${m.publicId},${m.vehicle?.plateNumber || 'N/A'},${m.garage?.name || 'N/A'},${m.maintenanceType},${m.scheduledDate},${m.status},${m.totalCostMad},${m.paymentStatus}\n`;
+      csv += `${m.publicId},${m.vehicleLabel || 'N/A'},${m.garageName || 'N/A'},${m.maintenanceType},${m.scheduledDate},${m.status},${m.totalCostMad},${m.paymentStatus}\n`;
     });
-
     return csv;
   }
 
@@ -217,19 +209,11 @@ export default class ManagementMaintenancesIndexController extends Controller {
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
-
     link.setAttribute('href', url);
     link.setAttribute('download', filename);
     link.style.visibility = 'hidden';
-
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  }
-
-  @action
-  search(event) {
-    const query = event.target.value;
-    this.controllerSearchTask.perform(query);
   }
 }

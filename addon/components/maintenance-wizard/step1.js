@@ -2,6 +2,7 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { inject as service } from '@ember/service';
+import config from 'ember-get-config';
 
 export default class MaintenanceWizardStep1Component extends Component {
   @service store;
@@ -9,7 +10,6 @@ export default class MaintenanceWizardStep1Component extends Component {
   @tracked vehicles = [];
   @tracked drivers = [];
   @tracked selectedVehicle = null;
-  @tracked selectedMaintenanceType = '';
   @tracked selectedCity = '';
   @tracked isLoading = true;
 
@@ -17,10 +17,27 @@ export default class MaintenanceWizardStep1Component extends Component {
   @tracked selectedDriver = '';
   @tracked searchVin = '';
   @tracked searchPlate = '';
+  
+  // Données des APIs Kounhany
+  @tracked prestations = [];
+  @tracked cities = [];
+  @tracked selectedPrestation = null;
+  @tracked selectedCityObj = null;
+
+  // URLs des APIs depuis .env
+  get kounhanyPrestationsApi() {
+    return config.KOUNHANY_PRESTATIONS_API || 'https://kounhany.com/api/BMGWD/BMGSRCHFRM';
+  }
+  
+  get kounhanyCitiesApi() {
+    return config.KOUNHANY_CITIES_API || 'https://kounhany.com/api/cities/lite';
+  }
 
   constructor() {
     super(...arguments);
     this.loadData();
+    this.loadPrestations();
+    this.loadCities();
   }
 
   async loadData() {
@@ -33,6 +50,30 @@ export default class MaintenanceWizardStep1Component extends Component {
       console.error('Erreur:', error);
     } finally {
       this.isLoading = false;
+    }
+  }
+
+  // Charger les prestations depuis Kounhany
+  async loadPrestations() {
+    try {
+      const response = await fetch(this.kounhanyPrestationsApi);
+      const data = await response.json();
+      this.prestations = data.prestations || [];
+      console.log('Prestations chargées:', this.prestations.length);
+    } catch (error) {
+      console.error('Erreur chargement prestations:', error);
+    }
+  }
+
+  // Charger les villes depuis Kounhany (Maroc = country 1)
+  async loadCities() {
+    try {
+      const response = await fetch(`${this.kounhanyCitiesApi}?country=1`);
+      const data = await response.json();
+      this.cities = data.cities || [];
+      console.log('Villes chargées:', this.cities.length);
+    } catch (error) {
+      console.error('Erreur chargement villes:', error);
     }
   }
 
@@ -108,7 +149,7 @@ export default class MaintenanceWizardStep1Component extends Component {
   }
 
   get isStep1Valid() {
-    return this.selectedVehicle && this.selectedMaintenanceType && this.selectedCity;
+    return this.selectedVehicle && this.selectedPrestation && this.selectedCity;
   }
 
   @action
@@ -134,18 +175,43 @@ export default class MaintenanceWizardStep1Component extends Component {
   @action
   selectVehicle(vehicle) {
     this.selectedVehicle = vehicle;
+    
+    // Récupérer la ville de la flotte pour pré-remplir
+    try {
+      const fleet = vehicle.get('fleet');
+      if (fleet) {
+        const fleetCity = fleet.get('city') || fleet.city;
+        
+        // Essayer de trouver la ville correspondante dans la liste
+        if (fleetCity && this.cities.length > 0) {
+          const cityObj = this.cities.find(c => c.city === fleetCity);
+          if (cityObj) {
+            this.selectedCityObj = cityObj;
+            this.selectedCity = cityObj.city;
+            this.args.onUpdateData('city', cityObj.city);
+            console.log('🏙️ VILLE PRÉ-REMPLIE:', cityObj.city);
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('⚠️ Impossible de récupérer la ville de la flotte:', e);
+    }
+    
     this.args.onUpdateData('vehicle', vehicle);
   }
 
   @action
-  updateMaintenanceType(event) {
-    this.selectedMaintenanceType = event.target.value; // ✅
-    this.args.onUpdateData('maintenanceType', event.target.value);
+  onPrestationChange(prestation) {
+    this.selectedPrestation = prestation;
+    // Stocker l'objet complet pour afficher le titre dans les étapes suivantes
+    this.args.onUpdateData('maintenanceType', prestation ? prestation.title : '');
+    this.args.onUpdateData('maintenanceTypeUuid', prestation ? prestation.uuid : '');
   }
 
   @action
-  updateCity(event) {
-    this.selectedCity = event.target.value; // ✅
-    this.args.onUpdateData('city', event.target.value);
+  onCityChange(city) {
+    this.selectedCityObj = city;
+    this.selectedCity = city ? city.city : '';
+    this.args.onUpdateData('city', city ? city.city : '');
   }
 }

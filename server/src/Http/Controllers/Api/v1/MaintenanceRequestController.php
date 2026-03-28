@@ -63,6 +63,7 @@ class MaintenanceRequestController extends Controller
         // Paginer
         $requests = $query->paginate($limit, ['*'], 'page', $page);
 
+        Log::info('📤 CONTRÔLEUR INDEX - Première maintenance:', $requests->first()?->toArray($request) ?? []);
         return MaintenanceRequestResource::collection($requests);
     }
 
@@ -90,7 +91,7 @@ class MaintenanceRequestController extends Controller
         $validated = $request->validate([
             'vehicle_uuid'         => 'required|uuid',
             'garage_uuid'          => 'required|uuid|exists:garages,uuid',
-            'appointment_slot_uuid' => 'required|uuid|exists:appointment_slots,uuid',
+            'appointment_slot_uuid' => 'nullable|uuid|exists:appointment_slots,uuid',
             'maintenance_type'     => 'required|string|max:100',
             'status'               => 'nullable|string|default:pending',
             'priority'             => 'nullable|string|default:medium',
@@ -109,7 +110,7 @@ class MaintenanceRequestController extends Controller
             'products.*.unit_price_mad'      => 'required|numeric|min:0',
         ]);
 
-        // Créer la demande
+
         $maintenanceRequest = MaintenanceRequest::create([
             'company_uuid'          => $request->user()->company_uuid,
             'user_uuid'             => $request->user()->uuid,
@@ -131,7 +132,6 @@ class MaintenanceRequestController extends Controller
             'created_by_uuid'       => $request->user()->uuid,
         ]);
 
-        // Ajouter les produits
         $productsTotal = 0;
         foreach ($validated['products'] as $product) {
             $totalPrice = $product['quantity'] * $product['unit_price_mad'];
@@ -150,20 +150,19 @@ class MaintenanceRequestController extends Controller
         $maintenanceRequest->total_products_cost_mad = $productsTotal;
         $maintenanceRequest->subtotal_mad = $productsTotal + ($validated['garage_service_cost_mad'] ?? 0);
         $maintenanceRequest->total_cost_mad = $maintenanceRequest->subtotal_mad + 
-                                              ($validated['tax_mad'] ?? 0) - 
-                                              ($validated['discount_mad'] ?? 0);
+                                            ($validated['tax_mad'] ?? 0) - 
+                                            ($validated['discount_mad'] ?? 0);
         $maintenanceRequest->save();
 
-        // Récupérer le créneau et booker
-        $slot = AppointmentSlot::findOrFail($validated['appointment_slot_uuid']);
-        if ($slot->garage_uuid === $validated['garage_uuid']) {
-            // Obtenir la date et l'heure du créneau
-            $maintenanceRequest->scheduled_date = $slot->date;
-            $maintenanceRequest->scheduled_time = $slot->time;
-            $maintenanceRequest->save();
-
-            // Booker le créneau
-            $slot->book();
+        // ✅ VÉRIFIER QUE appointment_slot_uuid N'EST PAS NULL AVANT L'UTILISER
+        if ($validated['appointment_slot_uuid']) {
+            $slot = AppointmentSlot::findOrFail($validated['appointment_slot_uuid']);
+            if ($slot->garage_uuid === $validated['garage_uuid']) {
+                $maintenanceRequest->scheduled_date = $slot->date;
+                $maintenanceRequest->scheduled_time = $slot->time;
+                $maintenanceRequest->save();
+                $slot->book();
+            }
         }
 
         return new MaintenanceRequestResource($maintenanceRequest);
@@ -203,6 +202,7 @@ class MaintenanceRequestController extends Controller
             $maintenanceRequest->recalculateTotal();
         }
 
+        Log::info('📤 CONTRÔLEUR STORE - Réponse:', (new MaintenanceRequestResource($maintenanceRequest))->toArray($request));
         return new MaintenanceRequestResource($maintenanceRequest);
     }
 
@@ -237,6 +237,7 @@ class MaintenanceRequestController extends Controller
             ], 400);
         }
 
+        Log::info('📤 CONTRÔLEUR STORE - Réponse:', (new MaintenanceRequestResource($maintenanceRequest))->toArray($request));
         return new MaintenanceRequestResource($maintenanceRequest);
     }
 
@@ -255,6 +256,7 @@ class MaintenanceRequestController extends Controller
             ], 400);
         }
 
+        Log::info('📤 CONTRÔLEUR STORE - Réponse:', (new MaintenanceRequestResource($maintenanceRequest))->toArray($request));
         return new MaintenanceRequestResource($maintenanceRequest);
     }
 
@@ -278,6 +280,7 @@ class MaintenanceRequestController extends Controller
             ], 400);
         }
 
+        Log::info('📤 CONTRÔLEUR STORE - Réponse:', (new MaintenanceRequestResource($maintenanceRequest))->toArray($request));
         return new MaintenanceRequestResource($maintenanceRequest);
     }
 
@@ -301,6 +304,7 @@ class MaintenanceRequestController extends Controller
             $validated['payment_reference'] ?? null
         );
 
+        Log::info('📤 CONTRÔLEUR STORE - Réponse:', (new MaintenanceRequestResource($maintenanceRequest))->toArray($request));
         return new MaintenanceRequestResource($maintenanceRequest);
     }
 
@@ -329,6 +333,7 @@ class MaintenanceRequestController extends Controller
             $maintenanceRequest->appointmentSlot->cancelBooking();
         }
 
+        Log::info('📤 CONTRÔLEUR STORE - Réponse:', (new MaintenanceRequestResource($maintenanceRequest))->toArray($request));
         return new MaintenanceRequestResource($maintenanceRequest);
     }
 
@@ -352,6 +357,7 @@ class MaintenanceRequestController extends Controller
             ], 400);
         }
 
+        Log::info('📤 CONTRÔLEUR STORE - Réponse:', (new MaintenanceRequestResource($maintenanceRequest))->toArray($request));
         return new MaintenanceRequestResource($maintenanceRequest);
     }
 
@@ -375,6 +381,7 @@ class MaintenanceRequestController extends Controller
 
         $requests = $query->paginate($limit);
 
+        Log::info('📤 CONTRÔLEUR INDEX - Première maintenance:', $requests->first()?->toArray($request) ?? []);
         return MaintenanceRequestResource::collection($requests);
     }
 
@@ -397,6 +404,7 @@ class MaintenanceRequestController extends Controller
 
         $requests = $query->paginate($limit);
 
+        Log::info('📤 CONTRÔLEUR INDEX - Première maintenance:', $requests->first()?->toArray($request) ?? []);
         return MaintenanceRequestResource::collection($requests);
     }
 

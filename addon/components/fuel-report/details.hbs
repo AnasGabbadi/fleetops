@@ -45,6 +45,24 @@
                 <div class="field-value">{{point-coordinates @resource.location}}</div>
             </div> --}}
         </div>
+        <div class="field-info-container col-span-2">
+            <div class="field-name">Bon de carburant</div>
+            <div class="field-value">
+                {{#if @resource.receipt_image_url}}
+                    <a href={{@resource.receipt_image_url}} target="_blank" rel="noopener noreferrer" class="inline-block">
+                        <img src={{@resource.receipt_image_url}} alt="Bon de carburant"
+                            class="max-w-md rounded border shadow hover:shadow-lg transition-shadow cursor-pointer" />
+                    </a>
+                    <div class="mt-2">
+                        <a href={{@resource.receipt_image_url}} download class="btn btn-sm btn-primary">
+                            Télécharger
+                        </a>
+                    </div>
+                {{else}}
+                    <span class="text-gray-400">Aucune image</span>
+                {{/if}}
+            </div>
+        </div>
     </ContentPanel>
 
     <CustomField::Yield @subject={{@resource}} @viewMode={{true}} @wrapperClass="bordered-top" />

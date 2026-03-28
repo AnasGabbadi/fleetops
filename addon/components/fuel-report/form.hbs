@@ -61,6 +61,33 @@
                     @permission={{get-write-permission @resource}} />
             </RegistryYield> --}}
         </div>
+        <InputGroup @name="Bon de carburant (image)" @wrapperClass="col-span-2">
+            <div class="space-y-2">
+                <input type="file" accept="image/jpeg,image/png,image/jpg" class="form-input w-full"
+                    {{on "change" this.onReceiptImageChange}}
+                    disabled={{cannot-write @resource}} />
+
+                {{#if this.receiptImagePreview}}
+                    <div class="mt-2 space-y-2">
+                        <img src={{this.receiptImagePreview}} alt="Aperçu" class="max-w-xs rounded border" />
+                        <button type="button" class="btn btn-danger btn-sm"
+                            {{on "click" this.removeReceiptImage}}
+                            disabled={{cannot-write @resource}}>
+                            Supprimer l'image
+                        </button>
+                    </div>
+                {{else if @resource.receipt_image_url}}
+                    <div class="mt-2 space-y-2">
+                        <img src={{@resource.receipt_image_url}} alt="Bon de carburant" class="max-w-xs rounded border" />
+                        <button type="button" class="btn btn-danger btn-sm"
+                            {{on "click" this.removeReceiptImage}}
+                            disabled={{cannot-write @resource}}>
+                            Supprimer l'image
+                        </button>
+                    </div>
+                {{/if}}
+            </div>
+        </InputGroup>
     </ContentPanel>
 
     <CustomField::Yield @subject={{@resource}} @wrapperClass="bordered-top" />

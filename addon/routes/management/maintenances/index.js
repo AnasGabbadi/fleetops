@@ -1,14 +1,20 @@
 import Route from '@ember/routing/route';
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 
 export default class ManagementMaintenancesIndexRoute extends Route {
   @service store;
 
-  model() {
+  queryParams = {
+    page: { refreshModel: true },
+    limit: { refreshModel: true },
+    sort: { refreshModel: true }
+  };
+
+  model(params) {
     return this.store.query('maintenance-request', {
-      page: 1,
-      limit: 10,
-      sort: '-createdAt',
+      page: params.page || 1,
+      limit: params.limit || 10,
+      sort: params.sort || '-createdAt'
     });
   }
 }

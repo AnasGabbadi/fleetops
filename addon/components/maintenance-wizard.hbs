@@ -1,29 +1,37 @@
 <div class="w-full h-full flex-1 flex flex-col min-w-0">
   <!-- Steps Header -->
-  <div class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm p-6 flex-shrink-0">
-    <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8">📋 Demande de Maintenance Véhicule
-    </h2>
-
-    <div class="flex items-center justify-between gap-4">
+  <div
+    class="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 border-b border-gray-200 dark:border-gray-700 px-6 py-5 flex-shrink-0">
+    <div class="flex items-center justify-between gap-4 max-w-5xl mx-auto">
       {{#each (array 1 2 3 4) as |step|}}
-      <button class="flex flex-col items-center flex-shrink-0 {{if (lt step 4) 'flex-1'}}" {{on "click" (fn
-        this.goToStep step)}}>
-        <div
-          class="w-12 h-12 md:w-14 md:h-14 rounded-full border-2 flex items-center justify-center font-bold text-sm md:text-base transition-all {{if (eq this.currentStep step) 'bg-sky-500 border-sky-500 text-white shadow-lg' (if (gt step this.currentStep) 'bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-400' 'bg-green-500 border-green-500 text-white')}}">
-          {{if (gt step this.currentStep) step '✓'}}
+      <div class="flex items-center gap-3 flex-shrink-0 {{if (lt step 4) 'flex-1'}} group transition-all duration-300">
+<div
+  class="w-9 h-9 rounded-full border-2.5 flex items-center justify-center font-bold text-sm transition-all flex-shrink-0 {{if (eq this.currentStep step) 'bg-sky-500 border-sky-500 text-white shadow-lg shadow-sky-500/30 scale-110' (if (lt step this.currentStep) 'bg-green-500 border-green-600 text-white shadow-md shadow-green-500/30' 'bg-gray-300 dark:bg-gray-700 border-gray-400 dark:border-gray-600 text-gray-700 dark:text-gray-400')}}">
+  {{if (lt step this.currentStep) '✓' step}}
+</div>
+
+        <div class="hidden sm:flex flex-col">
+          <span
+            class="text-sm font-bold {{if (eq this.currentStep step) 'text-sky-600 dark:text-sky-400' 'text-gray-700 dark:text-gray-300'}} transition-colors">
+            {{#if (eq step 1)}}Véhicule{{/if}}
+            {{#if (eq step 2)}}Garage{{/if}}
+            {{#if (eq step 3)}}Produits{{/if}}
+            {{#if (eq step 4)}}Confirmation{{/if}}
+          </span>
+          <span class="text-xs text-gray-500 dark:text-gray-400">
+            {{#if (eq step 1)}}Étape 1{{/if}}
+            {{#if (eq step 2)}}Étape 2{{/if}}
+            {{#if (eq step 3)}}Étape 3{{/if}}
+            {{#if (eq step 4)}}Étape 4{{/if}}
+          </span>
         </div>
-        <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 mt-2 text-center whitespace-nowrap">
-          {{#if (eq step 1)}}Véhicule{{/if}}
-          {{#if (eq step 2)}}Produits{{/if}}
-          {{#if (eq step 3)}}Garage{{/if}}
-          {{#if (eq step 4)}}Confirm{{/if}}
-        </span>
-      </button>
-      {{#if (lt step 4)}}
-      <div
-        class="flex-1 h-1 {{if (gt step this.currentStep) 'bg-gray-200 dark:bg-gray-700' 'bg-green-500'}} transition-colors">
+
+        {{!-- {{#if (lt step 4)}}
+        <div
+          class="hidden sm:block absolute left-1/2 top-4.5 h-1 w-20 {{if (lte step this.currentStep) 'bg-gradient-to-r from-emerald-400 to-sky-500' 'bg-gradient-to-r from-gray-300 to-gray-400 dark:from-gray-600 dark:to-gray-700'}} transition-all rounded-full"
+          style="z-index: 0;"></div>
+        {{/if}} --}}
       </div>
-      {{/if}}
       {{/each}}
     </div>
   </div>
@@ -36,14 +44,16 @@
       @onUpdateData={{this.updateWizardData}} />
 
     {{else if (eq this.currentStep 2)}}
+    {{!-- Step 2 = Produits (ancien Step 3) --}}
     <MaintenanceWizard::Step2 @onNext={{this.handleNextStep}} @onPrevious={{this.handlePreviousStep}}
       @onCancel={{this.handleCancel}} @onUpdateData={{this.updateWizardData}} @vehicle={{this.wizardData.vehicle}}
-      @maintenanceType={{this.wizardData.maintenanceType}} @city={{this.wizardData.city}} />
+      @maintenanceType={{this.wizardData.maintenanceType}} @city={{this.wizardData.city}}
+      @garage={{this.wizardData.garage}} />
 
     {{else if (eq this.currentStep 3)}}
+    {{!-- Step 3 = Garage (ancien Step 2) --}}
     <MaintenanceWizard::Step3 @onNext={{this.handleNextStep}} @onPrevious={{this.handlePreviousStep}}
       @onCancel={{this.handleCancel}} @onUpdateData={{this.updateWizardData}} @vehicle={{this.wizardData.vehicle}}
-      @maintenanceType={{this.wizardData.maintenanceType}} @city={{this.wizardData.city}}
       @cartItems={{this.wizardData.cartItems}} />
 
     {{else if (eq this.currentStep 4)}}

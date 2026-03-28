@@ -193,7 +193,7 @@ export default class ManagementDriversIndexController extends Controller {
             },
             {
                 label: 'Date d\'expiration du permis',
-                valuePath: 'drivers_license_expiryFormatted',
+                valuePath: 'drivers_license_expiry',
                 sortParam: 'drivers_license_expiry',
                 filterParam: 'drivers_license_expiry',
                 resizable: true,

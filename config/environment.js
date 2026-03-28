@@ -19,6 +19,13 @@ module.exports = function (environment) {
             driverAvatar: getenv('DEFAUL_DRIVER_AVATAR', 'https://flb-assets.s3-ap-southeast-1.amazonaws.com/static/driver-icons/moto-driver.png'),
             placeAvatar: getenv('DEFAUL_PLACE_AVATAR', 'https://flb-assets.s3-ap-southeast-1.amazonaws.com/static/place-icons/basic-building.png'),
         },
+
+        // Kounhany API URLs
+        KOUNHANY_BRANDS_API: process.env.KOUNHANY_BRANDS_API,
+        KOUNHANY_MODELS_API: process.env.KOUNHANY_MODELS_API,
+        KOUNHANY_VERSIONS_API: process.env.KOUNHANY_VERSIONS_API,
+        KOUNHANY_PRESTATIONS_API: process.env.KOUNHANY_PRESTATIONS_API,
+        KOUNHANY_CITIES_API: process.env.KOUNHANY_CITIES_API,
     };
 
     return ENV;

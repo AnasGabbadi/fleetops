@@ -133,9 +133,9 @@ export default class AuthLoginController extends Controller {
             this.failedAttempts++;
 
             // Handle unverified user
-            if (error.toString().includes('not verified')) {
-                return this.sendUserForEmailVerification(identity);
-            }
+            // if (error.toString().includes('not verified')) {
+            //     return this.sendUserForEmailVerification(identity);
+            // }
 
             // Handle password reset required
             if (error.toString().includes('reset required')) {
